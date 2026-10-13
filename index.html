@@ -65,7 +65,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 
 /* Ponsel: satu kolom, urutan diatur lewat order. Desktop: bilah pilihan lebar + area utama + panel samping. */
 .board { display: flex; flex-direction: column; gap: 20px; }
-.main, .duo, .side { display: contents; }
+.main, .duo, .side, .foot { display: contents; }
 .o1 { order: 1; } .o2 { order: 2; } .o3 { order: 3; } .o4 { order: 4; } .o5 { order: 5; } .o6 { order: 6; } .o7 { order: 7; }
 .o8 { order: 8; } .o9 { order: 9; } .o10 { order: 10; } .o11 { order: 11; } .o12 { order: 12; } .o13 { order: 13; } .o14 { order: 14; }
 .pickcard { margin-top: -46px; position: relative; }
@@ -74,7 +74,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
   .pick { grid-column: 1 / -1; }
   .main, .side { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
   .duo { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
-  .board > *, .main > *, .duo > *, .side > * { order: 0; }
+  .board > *, .main > *, .duo > *, .side > *, .foot > * { order: 0; }
   .hero-ill { display: none; }
   .pickcard { margin-top: 0; display: grid; grid-template-columns: minmax(230px, 280px) minmax(0, 1fr); grid-template-areas: "intro tiles" "fields fields"; gap: 20px 32px; padding: 26px 28px; }
   .pickcard .intro { grid-area: intro; }
@@ -84,6 +84,28 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
   .pickcard h2 { font-size: 26px; }
   .seg { margin-bottom: 0; }
 }
+.intro-actions, .drawer-head, .scrim { display: none; }
+.outline { border: 1.5px solid var(--line); background: var(--card); border-radius: 999px; padding: 10px 18px; font-weight: 600; font-size: 13.5px; cursor: pointer; }
+.outline:hover { border-color: var(--lilac); color: var(--lilac); }
+.pill.sm { padding: 10px 18px; font-size: 13.5px; }
+.drawer-head h3 { font-family: var(--font-display); font-size: 22px; }
+.close { width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--soft); font-size: 22px; line-height: 1; cursor: pointer; color: var(--ink); }
+@media (min-width: 900px) {
+  .intro-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 16px; }
+  .side { position: sticky; top: 16px; }
+  .rev-card, .side > .actions { display: none; }
+  .foot { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+  .foot > .actions { display: none; }
+  /* panel asumsi geser dari kanan */
+  .advcard { position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 92vw); z-index: 60; border-radius: 26px 0 0 26px; overflow-y: auto; padding: 24px 26px 40px; transform: translateX(105%); visibility: hidden; box-shadow: -24px 0 60px -20px rgba(60, 40, 80, 0.35); }
+  .drawer-open .advcard { transform: none; visibility: visible; transition: transform 0.28s ease; }
+  .drawer-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .advcard details.adv > summary { display: none; }
+  .advcard .advbody { margin-top: 8px; }
+  .scrim { display: block; position: fixed; inset: 0; z-index: 55; background: rgba(38, 33, 80, 0.28); }
+  .scrim[hidden] { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .advcard { transition: none !important; } }
 @media (min-width: 1200px) {
   .board { grid-template-columns: minmax(0, 1fr) 360px; }
   .duo { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
@@ -277,6 +299,11 @@ a { color: var(--lilac); }
             <button type="button" id="seg-local" aria-pressed="true">Bisnis lokal</button>
             <button type="button" id="seg-online" aria-pressed="false">Bisnis online</button>
           </div>
+          <div class="intro-actions">
+            <button type="button" class="outline" id="adv-open" aria-controls="advcard">Atur asumsi</button>
+            <button type="button" class="pill sm" id="copy2">Salin ringkasan</button>
+            <span class="hint" id="copied2" role="status"></span>
+          </div>
         </div>
         <div class="tiles" id="tiles" role="group" aria-label="Pilih jenis bisnis"></div>
         <div class="fields">
@@ -302,13 +329,17 @@ a { color: var(--lilac); }
     <aside class="side">
       <div class="card health o4" id="health"></div>
       <div class="banner o5" id="banner"></div>
-      <div class="card o2">
+      <div class="card o2 advcard" id="advcard" role="dialog" aria-label="Atur asumsi">
+        <div class="drawer-head"><h3>Atur asumsi</h3><button type="button" class="close" id="adv-close" aria-label="Tutup panel asumsi">×</button></div>
         <details class="adv" id="adv">
           <summary><span>Atur asumsi<small>Harga, minat, kompetitor, biaya, dan tingkat keyakinan</small></span></summary>
           <div class="advbody" id="advbody"></div>
         </details>
       </div>
-      <div class="card o7" id="rev"></div>
+      <div class="card o7 rev-card" id="rev"></div>
+    </aside>
+
+    <section class="foot">
       <div class="card status o11" id="status"></div>
       <div class="card o12"><details class="calc"><summary>Rincian hitungan</summary><ul id="lines"></ul></details></div>
       <div class="card o13">
@@ -327,8 +358,9 @@ a { color: var(--lilac); }
         </details>
       </div>
       <div class="actions o14"><button class="pill" id="copy" type="button">Salin ringkasan</button><span class="hint" id="copied" role="status"></span></div>
-    </aside>
+    </section>
   </div>
+  <div class="scrim" id="scrim" hidden></div>
 </main>
 
 <script>
@@ -793,7 +825,16 @@ a { color: var(--lilac); }
     if (e.target.id === "seg-online" && mode !== "online") setMode("online");
   });
 
-  $("copy").addEventListener("click", function () {
+  var desk = window.matchMedia("(min-width: 900px)");
+  function openDrawer() { document.body.classList.add("drawer-open"); $("scrim").hidden = false; $("adv").open = true; $("adv-close").focus(); }
+  function closeDrawer() { document.body.classList.remove("drawer-open"); $("scrim").hidden = true; if (desk.matches) $("adv-open").focus(); }
+  $("adv-open").addEventListener("click", openDrawer);
+  $("adv-close").addEventListener("click", closeDrawer);
+  $("scrim").addEventListener("click", closeDrawer);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && document.body.classList.contains("drawer-open")) closeDrawer(); });
+  desk.addEventListener && desk.addEventListener("change", function () { if (!desk.matches) closeDrawer(); });
+
+  function copySummary(outId) {
     if (!last) return;
     var s = last.st, e = function (x) { return isFinite(x.err) ? " ±" + Math.round(x.err) + "%" : ""; };
     var txt = "Estimasi pasar: " + BIZ[curBiz].n + " di " + last.label + "\n" +
@@ -803,9 +844,11 @@ a { color: var(--lilac); }
       "Omzet per bulan: " + rp(s.rev.p50) + " (" + rp(s.rev.p10) + " - " + rp(s.rev.p90) + ")" + e(s.rev) + "\n" +
       "Modal awal: " + rp(last.cost.modal) + "\nBiaya bulanan: " + rp(last.cost.month) + "\nLaba bersih per bulan: " + (last.cost.profit < 0 ? "-" : "") + rp(Math.abs(last.cost.profit)) + "\nBalik modal: " + (last.cost.bep ? last.cost.bep + " bulan" : "belum") + "\n" +
       "Galat berasal dari simulasi ketidakpastian asumsi, belum divalidasi dengan omzet nyata.";
-    var done = function (ok) { $("copied").textContent = ok ? "Tersalin." : "Gagal menyalin."; setTimeout(function () { $("copied").textContent = ""; }, 2500); };
+    var done = function (ok) { $(outId).textContent = ok ? "Tersalin." : "Gagal menyalin."; setTimeout(function () { $(outId).textContent = ""; }, 2500); };
     try { navigator.clipboard.writeText(txt).then(function () { done(true); }, function () { done(false); }); } catch (x) { done(false); }
-  });
+  }
+  $("copy").addEventListener("click", function () { copySummary("copied"); });
+  $("copy2").addEventListener("click", function () { copySummary("copied2"); });
 
   setStat("Saat ini tersedia data tingkat kota. Pilihan kecamatan muncul setelah data kecamatan ditambahkan.");
   fillProv(); set("r-prov", "Banten"); fillCities(); set("r-city", "Kota Tangerang"); fillKec();
