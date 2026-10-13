@@ -254,8 +254,13 @@ a { color: var(--lilac); }
   .pickcard .tile[aria-pressed="true"] { outline: 3px solid #fff; outline-offset: 2px; }
   .bizpick { display: block; padding: 18px 20px 16px; }
   .bizhead { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .bizhead h3 { margin-right: auto; }
+  .pager { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+  .pager[hidden] { display: none; }
+  .pager button { width: 30px; height: 30px; border-radius: 50%; border: 0; background: var(--soft); color: var(--ink); font-size: 18px; line-height: 1; cursor: pointer; }
+  .pager button:disabled { opacity: 0.35; cursor: default; }
   .bizpick .biz-search { width: 260px; max-width: 60%; margin: 0; background: var(--soft); padding: 9px 14px; font-size: 13.5px; }
-  .bizpick .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 10px; max-height: 136px; overflow-y: auto; overflow-x: hidden; padding: 4px 6px 4px 4px; margin: 0; scrollbar-width: thin; }
+  .bizpick .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 10px; padding: 4px; margin: 0; }
   .bizpick .tile { width: auto; height: auto; min-height: 0; padding: 10px 38px 10px 14px; gap: 1px; justify-content: flex-start; border-radius: 16px; }
   .bizpick .tile::after { right: -22px; bottom: -40px; }
   .bizpick .tile b { font-size: 15px; }
@@ -376,7 +381,7 @@ a { color: var(--lilac); }
       <button type="button" role="tab" data-tab="pel" aria-selected="false">Pelanggan</button>
       <button type="button" role="tab" data-tab="biaya" aria-selected="false">Modal &amp; biaya</button>
     </div>
-    <div class="card bizpick" id="bizpick"><div class="bizhead"><h3>Jenis bisnis</h3></div></div>
+    <div class="card bizpick" id="bizpick"><div class="bizhead"><h3>Jenis bisnis</h3><div class="pager" id="pager" hidden><button type="button" id="pg-prev" aria-label="Halaman sebelumnya">‹</button><span id="pg-info" aria-live="polite"></span><button type="button" id="pg-next" aria-label="Halaman berikutnya">›</button></div></div></div>
     <div class="main" aria-live="polite">
       <div class="duo">
         <div class="card o3" id="hero" data-t="ring"></div>
@@ -934,17 +939,26 @@ a { color: var(--lilac); }
   }
   place(); if (mq.addEventListener) mq.addEventListener("change", place);
   var q = document.getElementById("biz-q"), tl = document.getElementById("tiles"), busy = false;
+  var page = 0, PER = 8, first = true;
   function filt() {
     if (!q || !tl || busy) return; busy = true;
-    var v = q.value.trim().toLowerCase(), n = 0, none = tl.querySelector(".none");
-    Array.prototype.forEach.call(tl.querySelectorAll(".tile"), function (t) {
-      var ok = !v || t.textContent.toLowerCase().indexOf(v) > -1; t.hidden = !ok; if (ok) n++;
-    });
-    if (v && !n) { if (!none) { none = document.createElement("p"); none.className = "none"; none.textContent = "Tidak ada yang cocok."; tl.appendChild(none); } }
+    var v = q.value.trim().toLowerCase(), none = tl.querySelector(".none"), desk = mq.matches;
+    var all = Array.prototype.slice.call(tl.querySelectorAll(".tile"));
+    var ok = all.filter(function (t) { return !v || t.textContent.toLowerCase().indexOf(v) > -1; });
+    var per = desk ? PER : 999, pages = Math.max(1, Math.ceil(ok.length / per));
+    if (first && all.length) { var sel = ok.indexOf(tl.querySelector('.tile[aria-pressed="true"]')); if (sel > -1) page = Math.floor(sel / per); first = false; }
+    page = Math.min(Math.max(page, 0), pages - 1);
+    all.forEach(function (t) { var i = ok.indexOf(t); t.hidden = i < page * per || i >= (page + 1) * per; });
+    if (v && !ok.length) { if (!none) { none = document.createElement("p"); none.className = "none"; none.textContent = "Tidak ada yang cocok."; tl.appendChild(none); } }
     else if (none) none.remove();
+    var pg = document.getElementById("pager");
+    if (pg) { pg.hidden = !(desk && pages > 1); document.getElementById("pg-info").textContent = (page + 1) + " / " + pages; document.getElementById("pg-prev").disabled = page === 0; document.getElementById("pg-next").disabled = page >= pages - 1; }
     busy = false;
   }
-  if (q && tl) { q.addEventListener("input", filt); new MutationObserver(function () { if (!busy) filt(); }).observe(tl, { childList: true }); }
+  document.getElementById("pg-prev").addEventListener("click", function () { page--; filt(); });
+  document.getElementById("pg-next").addEventListener("click", function () { page++; filt(); });
+  if (mq.addEventListener) mq.addEventListener("change", filt);
+  if (q && tl) { q.addEventListener("input", function () { page = 0; filt(); }); new MutationObserver(function () { if (!busy) filt(); }).observe(tl, { childList: true }); }
   var tabs = board.querySelectorAll(".tabs button");
   Array.prototype.forEach.call(tabs, function (b) {
     b.addEventListener("click", function () {
