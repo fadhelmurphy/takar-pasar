@@ -357,6 +357,14 @@ a { color: var(--lilac); }
 .rng output { display: none; }
 .abs { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 12.5px; color: var(--muted); }
 #advbody .abs .ab { width: 130px; flex: none; border: 0; border-radius: 12px; background: var(--soft); padding: 8px 10px; font-size: 13.5px; font-weight: 600; text-align: right; }
+
+.modesw { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 4px 0 6px; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.modesw .seg { margin: 0; }
+.modesw .seg button { padding: 6px 12px; font-size: 12.5px; }
+#advbody[data-im="pct"] .abs { display: none; }
+#advbody[data-im="abs"] .f.chain .pct, #advbody[data-im="abs"] .f.chain .pu { display: none; }
+#advbody[data-im="abs"] .abs .ab { flex: 1; width: auto; text-align: left; }
+#advbody[data-im="abs"] .abs { margin-top: 8px; }
 </style>
 
 </head>
@@ -944,7 +952,12 @@ a { color: var(--lilac); }
     "o-seg": function () { return num("o-users"); },
     "o-need": function () { return num("o-users") * num("o-seg") / 100; }
   };
+  var inputMode = "pct";
   function enhance() {
+    var ab0 = $("advbody"); ab0.setAttribute("data-im", inputMode);
+    var sw = document.createElement("div"); sw.className = "modesw"; sw.setAttribute("role", "group"); sw.setAttribute("aria-label", "Mode isian");
+    sw.innerHTML = '<span>Isi dengan</span><div class="seg"><button type="button" data-im="pct" aria-pressed="' + (inputMode === "pct") + '">Persen</button><button type="button" data-im="abs" aria-pressed="' + (inputMode === "abs") + '">Jumlah orang</button></div>';
+    ab0.insertBefore(sw, ab0.firstChild);
     document.querySelectorAll("#advbody input[type=range]").forEach(function (r) {
       r.step = "any";
       var box = document.createElement("input"); box.type = "number"; box.className = "pct"; box.setAttribute("data-for", r.id); box.min = "0"; box.step = "any"; box.inputMode = "decimal"; box.setAttribute("aria-label", "Persen, ketik angka");
@@ -952,7 +965,7 @@ a { color: var(--lilac); }
       var rng = r.parentNode; rng.insertBefore(box, $(r.id + "-o")); rng.insertBefore(unit, $(r.id + "-o"));
       if (BASE[r.id]) {
         var a = document.createElement("div"); a.className = "abs";
-        a.innerHTML = '<span>atau</span><input type="number" class="ab" min="0" step="any" inputmode="numeric" data-abs="' + r.id + '" aria-label="Jumlah orang, ketik angka"><span>orang</span>';
+        rng.parentNode.classList.add("chain"); a.innerHTML = '<input type="number" class="ab" min="0" step="any" inputmode="numeric" data-abs="' + r.id + '" aria-label="Jumlah orang, ketik angka"><span>orang</span>';
         rng.parentNode.insertBefore(a, rng.nextSibling);
       }
     });
@@ -965,6 +978,11 @@ a { color: var(--lilac); }
       var a = document.querySelector('#advbody .ab[data-abs="' + r.id + '"]'); if (a && document.activeElement !== a) a.value = Math.round(BASE[r.id]() * parseFloat(r.value) / 100);
     });
   }
+  $("advbody").addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("[data-im]") : null; if (!b || b.parentNode.className.indexOf("seg") < 0) return;
+    inputMode = b.getAttribute("data-im"); $("advbody").setAttribute("data-im", inputMode);
+    Array.prototype.forEach.call(b.parentNode.children, function (x) { x.setAttribute("aria-pressed", String(x === b)); }); sync();
+  });
   $("advbody").addEventListener("input", function (e) {
     var t = e.target, r, v;
     if (t.classList.contains("pct")) { r = $(t.getAttribute("data-for")); v = parseFloat(t.value); if (isFinite(v) && v >= 0) { if (v > +r.max) r.max = v; if (v < +r.min) r.min = v; r.value = v; } }
