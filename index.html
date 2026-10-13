@@ -65,33 +65,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 
 /* Ponsel: satu kolom, urutan diatur lewat order. Desktop: bilah pilihan lebar + area utama + panel samping. */
 .board { display: flex; flex-direction: column; gap: 20px; }
-.main, .duo, .side, .foot { display: contents; }
+.content, .main, .duo, .side, .foot { display: contents; }
 .o1 { order: 1; } .o2 { order: 2; } .o3 { order: 3; } .o4 { order: 4; } .o5 { order: 5; } .o6 { order: 6; } .o7 { order: 7; }
 .o8 { order: 8; } .o9 { order: 9; } .o10 { order: 10; } .o11 { order: 11; } .o12 { order: 12; } .o13 { order: 13; } .o14 { order: 14; }
 .pickcard { margin-top: -46px; position: relative; }
-@media (min-width: 900px) {
-  .board { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
-  .pick { grid-column: 1 / -1; }
-  .main, .side { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
-  .side { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .board > .pick { order: -2; }
-  .board > .side { order: -1; }
-  #health { grid-row: span 2; }
-  #banner, #modal { grid-column: 2; }
-  .duo { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
-  .main > .duo:first-child { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .board > *, .main > *, .duo > *, .side > *, .foot > * { order: 0; }
-  .hero-ill { display: none; }
-  .pickcard { margin-top: 0; display: grid; grid-template-columns: minmax(230px, 280px) minmax(0, 1fr); grid-template-areas: "intro tiles" "fields fields"; gap: 20px 32px; padding: 26px 28px; }
-  .pickcard .intro { grid-area: intro; }
-  .pickcard .tiles { grid-area: tiles; display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); overflow: visible; padding: 4px; margin: 0; }
-  .pickcard .tile { width: auto; height: auto; min-height: 150px; }
-  .pickcard .tiles { align-items: stretch; }
-  #opex .costs { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
-  .pickcard .fields { grid-area: fields; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 0; padding-top: 18px; border-top: 1px solid var(--line); }
-  .pickcard h2 { font-size: 26px; }
-  .seg { margin-bottom: 0; }
-}
 .intro-actions, .drawer-head, .scrim { display: none; }
 .outline { border: 1.5px solid var(--line); background: var(--card); border-radius: 999px; padding: 10px 18px; font-weight: 600; font-size: 13.5px; cursor: pointer; }
 .outline:hover { border-color: var(--lilac); color: var(--lilac); }
@@ -113,13 +90,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
   .scrim[hidden] { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .advcard { transition: none !important; } }
-@media (min-width: 1200px) {
-  .board { grid-template-columns: minmax(0, 1fr) 360px; }
-  .board > .side { display: flex; flex-direction: column; align-self: stretch; order: 0; }
-  #modal { flex: 1; display: flex; flex-direction: column; }
-  #modal .costs { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-  #health { grid-row: auto; }
-}
 
 .card { background: var(--card); border-radius: 26px; padding: 22px; box-shadow: var(--shadow); min-width: 0; }
 .card h2 { font-family: var(--font-display); font-weight: 700; font-size: 22px; line-height: 1.25; margin: 0; text-wrap: balance; }
@@ -252,6 +222,66 @@ details.src ul, details.calc ul { margin: 12px 0 0; padding-left: 18px; font-siz
 details.calc summary { font-weight: 700; cursor: pointer; }
 a { color: var(--lilac); }
 @media (prefers-reduced-motion: reduce) { .tile, .ring circle { transition: none !important; } }
+
+/* ===== Desktop: kerangka aplikasi (sidebar pilihan + konten bertab) ===== */
+.side-brand, .chead, .tabs { display: none; }
+@media (min-width: 900px) {
+  .top { display: none; }
+  .wrap { padding-block: 24px 40px; }
+  .board { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 22px; align-items: stretch; padding: 16px; border-radius: 36px; background: rgba(255, 255, 255, 0.5); box-shadow: 0 30px 70px -34px rgba(90, 60, 110, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.75); }
+  .board > .pick { grid-column: 1; order: -1; display: flex; flex-direction: column; }
+  .hero-ill { display: none; }
+  .pickcard { margin-top: 0; flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 24px 20px 20px; border-radius: 26px; color: #fff; background: linear-gradient(172deg, #9b91d8 0%, #7c80cb 48%, #6f9bd9 100%); box-shadow: 0 24px 40px -24px rgba(90, 80, 170, 0.6); }
+  .pickcard .intro { display: contents; }
+  .side-brand { display: flex; order: 0; margin-bottom: 4px; }
+  .side-brand .wordmark { color: #fff; font-size: 20px; }
+  .side-brand .wordmark em { color: #ffd9c4; }
+  .side-brand .tagline { color: rgba(255, 255, 255, 0.78); }
+  .side-brand .logo { filter: drop-shadow(0 6px 12px rgba(40, 30, 100, 0.35)); }
+  .pickcard h2 { order: 1; color: #fff; font-size: 21px; margin-top: 8px; }
+  .pickcard .intro > p { order: 2; color: rgba(255, 255, 255, 0.78); margin: -8px 0 0 !important; }
+  .pickcard .seg { order: 3; margin: 0; display: flex; background: rgba(255, 255, 255, 0.2); }
+  .pickcard .seg button { flex: 1; color: rgba(255, 255, 255, 0.88); }
+  .pickcard .seg button[aria-pressed="true"] { color: var(--ink); }
+  .pickcard .tiles { order: 4; display: flex; flex-direction: column; gap: 8px; overflow: visible; padding: 3px; margin: 0; }
+  .pickcard .tile { width: auto; height: auto; min-height: 0; padding: 10px 40px 10px 14px; gap: 1px; justify-content: flex-start; border-radius: 16px; }
+  .pickcard .tile::after { right: -22px; bottom: -40px; }
+  .pickcard .tile b { font-size: 15px; }
+  .pickcard .tile i { top: 50%; transform: translateY(-50%); right: 12px; }
+  .pickcard .tile[aria-pressed="true"] { outline: 3px solid #fff; outline-offset: 2px; }
+  .pickcard .fields { order: 5; margin: 4px 0 0; gap: 10px; }
+  .pickcard .field label { color: rgba(255, 255, 255, 0.86); }
+  .pickcard .field select { background-color: #fff; color: var(--ink); }
+  .pickcard .intro-actions { order: 6; margin-top: auto; padding-top: 6px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .pickcard .intro-actions .outline { background: rgba(255, 255, 255, 0.16); border-color: rgba(255, 255, 255, 0.55); color: #fff; }
+  .pickcard .intro-actions .outline:hover { background: rgba(255, 255, 255, 0.26); color: #fff; border-color: #fff; }
+  .pickcard .hint { color: rgba(255, 255, 255, 0.85); }
+
+  .content { grid-column: 2; display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-content: start; min-width: 0; padding: 6px 4px 0 0; }
+  .main, .duo, .side { display: contents; }
+  .content .card, .content .banner { order: 0; }
+  .chead { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+  .chead .eyebrow { margin: 0 0 4px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .ctitle { margin: 0; font-family: var(--font-display); font-size: 30px; line-height: 1.15; font-weight: 700; }
+  .tabs { display: inline-flex; gap: 4px; padding: 5px; border-radius: 999px; background: rgba(255, 255, 255, 0.7); box-shadow: inset 0 0 0 1px var(--line); justify-self: start; }
+  .tabs button { border: 0; background: none; padding: 9px 22px; border-radius: 999px; font-size: 12.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); cursor: pointer; }
+  .tabs button[aria-selected="true"] { background: #fff; color: var(--ink); box-shadow: 0 4px 12px rgba(80, 60, 90, 0.14); }
+  .board[data-tab="ring"] [data-t]:not([data-t~="ring"]), .board[data-tab="pel"] [data-t]:not([data-t~="pel"]), .board[data-tab="biaya"] [data-t]:not([data-t~="biaya"]) { display: none !important; }
+  .rev-card, .side > .actions { display: none; }
+  .foot { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 20px; align-items: start; }
+  .foot > .actions { display: none; }
+  #funnel, #modal { display: flex; flex-direction: column; justify-content: space-between; }
+  #modal .costs { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+  #opex .costs { display: grid; grid-template-columns: 1fr; }
+  .banner { display: flex; flex-direction: column; justify-content: center; }
+}
+@media (min-width: 1200px) {
+  .content { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .chead, .tabs { grid-column: 1 / -1; }
+  .board[data-tab="ring"] #banner { grid-column: 1 / -1; }
+  .board[data-tab="pel"] .content { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+  .board[data-tab="biaya"] .content { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+}
 </style>
 
 </head>
@@ -285,7 +315,7 @@ a { color: var(--lilac); }
     </div>
   </header>
 
-  <div class="board" id="board">
+  <div class="board" id="board" data-tab="ring">
     <section class="pick o1" aria-label="Pilihan bisnis dan daerah">
       <div class="hero-ill">
         <svg viewBox="0 0 380 190" role="img" aria-label="Ilustrasi toko kecil dengan penanda lokasi">
@@ -324,21 +354,28 @@ a { color: var(--lilac); }
       </div>
     </section>
 
+    <div class="content">
+    <div class="chead"><div><p class="eyebrow">Hasil analisis</p><div class="ctitle" id="ctitle" role="heading" aria-level="2">Takar Pasar</div></div><span class="badge" id="cbadge"></span></div>
+    <div class="tabs" role="tablist" aria-label="Bagian hasil">
+      <button type="button" role="tab" data-tab="ring" aria-selected="true">Ringkasan</button>
+      <button type="button" role="tab" data-tab="pel" aria-selected="false">Pelanggan</button>
+      <button type="button" role="tab" data-tab="biaya" aria-selected="false">Modal &amp; biaya</button>
+    </div>
     <div class="main" aria-live="polite">
       <div class="duo">
-        <div class="card o3" id="hero"></div>
-        <div class="card o8" id="profit"></div>
+        <div class="card o3" id="hero" data-t="ring"></div>
+        <div class="card o8" id="profit" data-t="ring"></div>
       </div>
-      <div class="card o6" id="funnel"></div>
+      <div class="card o6" id="funnel" data-t="pel"></div>
       <div class="duo">
-        <div class="card o10" id="opex"></div>
+        <div class="card o10" id="opex" data-t="biaya"></div>
       </div>
     </div>
 
     <aside class="side">
-      <div class="card health o4" id="health"></div>
-      <div class="banner o5" id="banner"></div>
-      <div class="card o9" id="modal"></div>
+      <div class="card health o4" id="health" data-t="pel"></div>
+      <div class="banner o5" id="banner" data-t="ring"></div>
+      <div class="card o9" id="modal" data-t="biaya"></div>
       <div class="card o2 advcard" id="advcard" role="dialog" aria-label="Atur asumsi">
         <div class="drawer-head"><h3>Atur asumsi</h3><button type="button" class="close" id="adv-close" aria-label="Tutup panel asumsi">×</button></div>
         <details class="adv" id="adv">
@@ -369,6 +406,7 @@ a { color: var(--lilac); }
       </div>
       <div class="actions o14"><button class="pill" id="copy" type="button">Salin ringkasan</button><span class="hint" id="copied" role="status"></span></div>
     </section>
+    </div>
   </div>
   <div class="scrim" id="scrim" hidden></div>
 </main>
@@ -864,6 +902,30 @@ a { color: var(--lilac); }
   fillProv(); set("r-prov", "Banten"); fillCities(); set("r-city", "Kota Tangerang"); fillKec();
   renderTiles(); buildAdv();
   loadData();
+})();
+</script>
+<script>
+(function () {
+  var board = document.getElementById("board"); if (!board) return;
+  var pc = board.querySelector(".pickcard"), brand = document.querySelector(".top .brand");
+  if (pc && brand) { var c = brand.cloneNode(true); c.classList.add("side-brand"); pc.insertBefore(c, pc.firstChild); }
+  var tabs = board.querySelectorAll(".tabs button");
+  Array.prototype.forEach.call(tabs, function (b) {
+    b.addEventListener("click", function () {
+      board.setAttribute("data-tab", b.getAttribute("data-tab"));
+      Array.prototype.forEach.call(tabs, function (x) { x.setAttribute("aria-selected", String(x === b)); });
+    });
+  });
+  function put(el, txt) { if (el && txt && el.textContent !== txt) el.textContent = txt; }
+  function mirror() {
+    var chip = document.querySelector("#hero .chip");
+    if (chip) put(document.getElementById("ctitle"), chip.textContent.trim());
+    var d = document.getElementById("databadge");
+    if (d) put(document.getElementById("cbadge"), d.textContent);
+  }
+  mirror();
+  new MutationObserver(mirror).observe(document.getElementById("hero"), { childList: true, subtree: true, characterData: true });
+  var db = document.getElementById("databadge"); if (db) new MutationObserver(mirror).observe(db, { childList: true, subtree: true, characterData: true });
 })();
 </script>
 
