@@ -362,9 +362,9 @@ a { color: var(--lilac); }
 .modesw .seg { margin: 0; }
 .modesw .seg button { padding: 6px 12px; font-size: 12.5px; }
 #advbody[data-im="pct"] .abs { display: none; }
-#advbody[data-im="abs"] .f.chain .pct, #advbody[data-im="abs"] .f.chain .pu { display: none; }
+#advbody[data-im="abs"] .f.chain .rng { display: none; }
 #advbody[data-im="abs"] .abs .ab { flex: 1; width: auto; text-align: left; }
-#advbody[data-im="abs"] .abs { margin-top: 8px; }
+#advbody[data-im="abs"] .abs { margin-top: 0; }
 </style>
 
 </head>
@@ -950,13 +950,18 @@ a { color: var(--lilac); }
     "l-seg": function () { return num("l-pop") * num("l-cov") / 100; },
     "l-need": function () { return num("l-pop") * num("l-cov") / 100 * num("l-seg") / 100; },
     "o-seg": function () { return num("o-users"); },
-    "o-need": function () { return num("o-users") * num("o-seg") / 100; }
+    "o-need": function () { return num("o-users") * num("o-seg") / 100; },
+    "l-ramp": function () { var pw = num("l-power") / 100, c = num("l-comp"); return BASE["l-need"]() * num("l-need") / 100 * pw / (c + pw); },
+    "c-cogs": function () { return last && last.st ? last.st.rev.p50 : 0; },
+    "o-cvr": function () { return num("o-budget") / Math.max(1, num("o-cpc")); },
+    "o-org": function () { return num("o-budget") / Math.max(1, num("o-cpc")) * num("o-cvr") / 100; }
   };
+  var UNIT = { "l-ramp": "pelanggan per bulan", "c-cogs": "Rp per bulan", "o-cvr": "pembeli per bulan", "o-org": "pembeli per bulan" };
   var inputMode = "pct";
   function enhance() {
     var ab0 = $("advbody"); ab0.setAttribute("data-im", inputMode);
     var sw = document.createElement("div"); sw.className = "modesw"; sw.setAttribute("role", "group"); sw.setAttribute("aria-label", "Mode isian");
-    sw.innerHTML = '<span>Isi dengan</span><div class="seg"><button type="button" data-im="pct" aria-pressed="' + (inputMode === "pct") + '">Persen</button><button type="button" data-im="abs" aria-pressed="' + (inputMode === "abs") + '">Jumlah orang</button></div>';
+    sw.innerHTML = '<span>Isi dengan</span><div class="seg"><button type="button" data-im="pct" aria-pressed="' + (inputMode === "pct") + '">Persen</button><button type="button" data-im="abs" aria-pressed="' + (inputMode === "abs") + '">Angka</button></div>';
     ab0.insertBefore(sw, ab0.firstChild);
     document.querySelectorAll("#advbody input[type=range]").forEach(function (r) {
       r.step = "any";
@@ -965,7 +970,7 @@ a { color: var(--lilac); }
       var rng = r.parentNode; rng.insertBefore(box, $(r.id + "-o")); rng.insertBefore(unit, $(r.id + "-o"));
       if (BASE[r.id]) {
         var a = document.createElement("div"); a.className = "abs";
-        rng.parentNode.classList.add("chain"); a.innerHTML = '<input type="number" class="ab" min="0" step="any" inputmode="numeric" data-abs="' + r.id + '" aria-label="Jumlah orang, ketik angka"><span>orang</span>';
+        rng.parentNode.classList.add("chain"); a.innerHTML = '<input type="number" class="ab" min="0" step="any" inputmode="numeric" data-abs="' + r.id + '" aria-label="Jumlah orang, ketik angka"><span>' + (UNIT[r.id] || "orang") + '</span>';
         rng.parentNode.insertBefore(a, rng.nextSibling);
       }
     });
