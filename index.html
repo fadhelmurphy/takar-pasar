@@ -389,7 +389,6 @@ a { color: var(--lilac); }
             <button type="button" id="seg-online" aria-pressed="false">Bisnis online</button>
           </div>
           <div class="intro-actions">
-            <button type="button" class="outline js-adv" id="adv-open" aria-controls="advcard">Ubah estimasi</button>
             <button type="button" class="pill sm" id="copy2">Salin ringkasan</button>
             <span class="hint" id="copied2" role="status"></span>
           </div>
@@ -405,7 +404,7 @@ a { color: var(--lilac); }
     </section>
 
     <div class="content">
-    <div class="chead"><div><p class="eyebrow">Hasil analisis</p><div class="ctitle" id="ctitle" role="heading" aria-level="2">Takar Pasar</div></div><div class="chead-r"><span class="badge" id="cbadge"></span><button type="button" class="outline sm js-adv">Ubah estimasi</button><button type="button" class="pill sm js-pdf">Unduh PDF</button></div></div>
+    <div class="chead"><div><p class="eyebrow">Hasil analisis</p><div class="ctitle" id="ctitle" role="heading" aria-level="2">Takar Pasar</div></div><div class="chead-r"><span class="badge" id="cbadge"></span><button type="button" class="outline sm js-adv" id="adv-open" aria-controls="advcard">Ubah estimasi</button><button type="button" class="pill sm js-pdf">Unduh PDF</button></div></div>
     <div class="tabs" role="tablist" aria-label="Bagian hasil">
       <button type="button" role="tab" data-tab="ring" aria-selected="true">Ringkasan</button>
       <button type="button" role="tab" data-tab="pel" aria-selected="false">Pelanggan</button>
@@ -928,7 +927,7 @@ a { color: var(--lilac); }
 
   var desk = window.matchMedia("(min-width: 900px)");
   function openDrawer() { document.body.classList.add("drawer-open"); $("scrim").hidden = false; $("adv").open = true; $("adv-close").focus(); }
-  function closeDrawer() { document.body.classList.remove("drawer-open"); $("scrim").hidden = true; if (desk.matches) $("adv-open").focus(); }
+  function closeDrawer() { document.body.classList.remove("drawer-open"); $("scrim").hidden = true; if (desk.matches) { var o = document.querySelector(".chead .js-adv"); if (o) o.focus(); } }
   Array.prototype.forEach.call(document.querySelectorAll(".js-adv"), function (b) { b.addEventListener("click", openDrawer); });
   $("adv-reset").addEventListener("click", function () { buildAdv(); });
   $("adv-close").addEventListener("click", closeDrawer);
