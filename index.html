@@ -301,6 +301,36 @@ a { color: var(--lilac); }
   .board[data-tab="pel"] .content { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
   .board[data-tab="biaya"] .content { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
 }
+
+.printonly { display: none; }
+.outline.sm { padding: 9px 16px; font-size: 13px; }
+.dh-r { display: flex; align-items: center; gap: 10px; }
+.drawer-note { margin: 0 0 8px; }
+.drawer-head { gap: 12px; }
+@media (min-width: 900px) {
+  .chead-r { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+}
+@media print {
+  @page { size: A4; margin: 14mm; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { background: #fff !important; }
+  body::before, .top, .pick, .tabs, .bizpick, .advcard, .scrim, .actions, .chead-r, .rev-card, .hero-ill, .foot > .actions { display: none !important; }
+  .wrap { max-width: none; padding: 0; zoom: 0.8; }
+  .board, .content, .main, .duo, .side, .foot { display: block !important; padding: 0; background: none; box-shadow: none; border-radius: 0; }
+  .board [data-t] { display: block !important; }
+  .chead { display: block; margin-bottom: 10px; }
+  .chead .eyebrow { margin: 0 0 2px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6d6680; }
+  .ctitle { font-family: var(--font-display); font-size: 26px; font-weight: 700; line-height: 1.2; }
+  .card, .banner { box-shadow: none !important; border: 1px solid #e3deea; margin: 0 0 10px; break-inside: avoid; page-break-inside: avoid; }
+  #funnel, #modal { display: block !important; }
+  details > summary { list-style: none; }
+  .printonly { display: block; margin: 0 0 10px; padding: 16px 20px; border: 1px solid #e3deea; border-radius: 18px; break-inside: avoid; }
+  .printonly h3 { margin: 0 0 8px; font-size: 15px; }
+  .printonly dl { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 28px; margin: 0; font-size: 12px; }
+  .printonly dl div { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dotted #ddd; padding: 2px 0; }
+  .printonly dt { color: #6d6680; } .printonly dd { margin: 0; font-weight: 600; text-align: right; }
+  .printonly p { font-size: 11px; color: #6d6680; margin: 8px 0 0; }
+}
 </style>
 
 </head>
@@ -359,7 +389,7 @@ a { color: var(--lilac); }
             <button type="button" id="seg-online" aria-pressed="false">Bisnis online</button>
           </div>
           <div class="intro-actions">
-            <button type="button" class="outline" id="adv-open" aria-controls="advcard">Atur asumsi</button>
+            <button type="button" class="outline js-adv" id="adv-open" aria-controls="advcard">Ubah estimasi</button>
             <button type="button" class="pill sm" id="copy2">Salin ringkasan</button>
             <span class="hint" id="copied2" role="status"></span>
           </div>
@@ -375,7 +405,7 @@ a { color: var(--lilac); }
     </section>
 
     <div class="content">
-    <div class="chead"><div><p class="eyebrow">Hasil analisis</p><div class="ctitle" id="ctitle" role="heading" aria-level="2">Takar Pasar</div></div><span class="badge" id="cbadge"></span></div>
+    <div class="chead"><div><p class="eyebrow">Hasil analisis</p><div class="ctitle" id="ctitle" role="heading" aria-level="2">Takar Pasar</div></div><div class="chead-r"><span class="badge" id="cbadge"></span><button type="button" class="outline sm js-adv">Ubah estimasi</button><button type="button" class="pill sm js-pdf">Unduh PDF</button></div></div>
     <div class="tabs" role="tablist" aria-label="Bagian hasil">
       <button type="button" role="tab" data-tab="ring" aria-selected="true">Ringkasan</button>
       <button type="button" role="tab" data-tab="pel" aria-selected="false">Pelanggan</button>
@@ -397,10 +427,11 @@ a { color: var(--lilac); }
       <div class="card health o4" id="health" data-t="pel"></div>
       <div class="banner o5" id="banner" data-t="ring"></div>
       <div class="card o9" id="modal" data-t="biaya"></div>
-      <div class="card o2 advcard" id="advcard" role="dialog" aria-label="Atur asumsi">
-        <div class="drawer-head"><h3>Atur asumsi</h3><button type="button" class="close" id="adv-close" aria-label="Tutup panel asumsi">×</button></div>
+      <div class="card o2 advcard" id="advcard" role="dialog" aria-label="Ubah estimasi">
+        <div class="drawer-head"><h3>Ubah estimasi</h3><div class="dh-r"><button type="button" class="outline sm" id="adv-reset">Atur ulang</button><button type="button" class="close" id="adv-close" aria-label="Tutup panel">×</button></div></div>
+        <p class="muted small drawer-note">Angka di bawah bisa kamu ganti. Hasil langsung dihitung ulang.</p>
         <details class="adv" id="adv">
-          <summary><span>Atur asumsi<small>Harga, minat, kompetitor, biaya, dan tingkat keyakinan</small></span></summary>
+          <summary><span>Ubah estimasi<small>Harga, minat, kompetitor, biaya, dan tingkat keyakinan</small></span></summary>
           <div class="advbody" id="advbody"></div>
         </details>
       </div>
@@ -425,10 +456,11 @@ a { color: var(--lilac); }
           </ul>
         </details>
       </div>
-      <div class="actions o14"><button class="pill" id="copy" type="button">Salin ringkasan</button><span class="hint" id="copied" role="status"></span></div>
+      <div class="actions o14"><button class="pill" id="copy" type="button">Salin ringkasan</button><button class="outline js-pdf" type="button">Unduh PDF</button><span class="hint" id="copied" role="status"></span></div>
     </section>
     </div>
   </div>
+  <section class="printonly" id="printsum" aria-hidden="true"></section>
   <div class="scrim" id="scrim" hidden></div>
 </main>
 
@@ -897,7 +929,8 @@ a { color: var(--lilac); }
   var desk = window.matchMedia("(min-width: 900px)");
   function openDrawer() { document.body.classList.add("drawer-open"); $("scrim").hidden = false; $("adv").open = true; $("adv-close").focus(); }
   function closeDrawer() { document.body.classList.remove("drawer-open"); $("scrim").hidden = true; if (desk.matches) $("adv-open").focus(); }
-  $("adv-open").addEventListener("click", openDrawer);
+  Array.prototype.forEach.call(document.querySelectorAll(".js-adv"), function (b) { b.addEventListener("click", openDrawer); });
+  $("adv-reset").addEventListener("click", function () { buildAdv(); });
   $("adv-close").addEventListener("click", closeDrawer);
   $("scrim").addEventListener("click", closeDrawer);
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && document.body.classList.contains("drawer-open")) closeDrawer(); });
@@ -976,6 +1009,31 @@ a { color: var(--lilac); }
   mirror();
   new MutationObserver(mirror).observe(document.getElementById("hero"), { childList: true, subtree: true, characterData: true });
   var db = document.getElementById("databadge"); if (db) new MutationObserver(mirror).observe(db, { childList: true, subtree: true, characterData: true });
+})();
+</script>
+<script>
+(function () {
+  function txt(id) { var e = document.getElementById(id); return e ? e.textContent.trim() : ""; }
+  function build() {
+    var box = document.getElementById("printsum"); if (!box) return;
+    var rows = [];
+    Array.prototype.forEach.call(document.querySelectorAll("#advbody .f"), function (f) {
+      var l = f.querySelector("label"), i = f.querySelector('input'); if (!l || !i) return;
+      var v = i.type === "range" ? (document.getElementById(i.id + "-o") || {}).textContent : (i.value === "" ? "—" : Number(i.value).toLocaleString("id-ID"));
+      var q = f.querySelector("select.q"); if (q && q.selectedIndex > -1) v += " (" + q.options[q.selectedIndex].text + ")";
+      rows.push("<div><dt>" + l.textContent + "</dt><dd>" + v + "</dd></div>");
+    });
+    box.innerHTML = "<h3>Estimasi yang dipakai</h3><dl>" + rows.join("") + "</dl><p>Dibuat dengan Takar Pasar, " + txt("cbadge") + ". Angka adalah perkiraan, bukan jaminan. Lihat bagian Sumber data.</p>";
+    Array.prototype.forEach.call(document.querySelectorAll("details"), function (d) { d.dataset.was = d.open ? "1" : "0"; d.open = true; });
+    document.body.dataset.title = document.title;
+    document.title = "Takar Pasar - " + txt("ctitle");
+  }
+  function restore() {
+    Array.prototype.forEach.call(document.querySelectorAll("details"), function (d) { if (d.dataset.was === "0") d.open = false; });
+    if (document.body.dataset.title) document.title = document.body.dataset.title;
+  }
+  window.addEventListener("beforeprint", build); window.addEventListener("afterprint", restore);
+  Array.prototype.forEach.call(document.querySelectorAll(".js-pdf"), function (b) { b.addEventListener("click", function () { window.print(); }); });
 })();
 </script>
 
