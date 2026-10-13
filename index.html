@@ -70,16 +70,24 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .o8 { order: 8; } .o9 { order: 9; } .o10 { order: 10; } .o11 { order: 11; } .o12 { order: 12; } .o13 { order: 13; } .o14 { order: 14; }
 .pickcard { margin-top: -46px; position: relative; }
 @media (min-width: 900px) {
-  .board { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 24px; align-items: start; }
+  .board { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
   .pick { grid-column: 1 / -1; }
   .main, .side { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+  .side { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .board > .pick { order: -2; }
+  .board > .side { order: -1; }
+  #health { grid-row: span 2; }
+  #banner, #modal { grid-column: 2; }
   .duo { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .main > .duo:first-child { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .board > *, .main > *, .duo > *, .side > *, .foot > * { order: 0; }
   .hero-ill { display: none; }
   .pickcard { margin-top: 0; display: grid; grid-template-columns: minmax(230px, 280px) minmax(0, 1fr); grid-template-areas: "intro tiles" "fields fields"; gap: 20px 32px; padding: 26px 28px; }
   .pickcard .intro { grid-area: intro; }
   .pickcard .tiles { grid-area: tiles; display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); overflow: visible; padding: 4px; margin: 0; }
-  .pickcard .tile { width: auto; height: 124px; }
+  .pickcard .tile { width: auto; height: auto; min-height: 150px; }
+  .pickcard .tiles { align-items: stretch; }
+  #opex .costs { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
   .pickcard .fields { grid-area: fields; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 0; padding-top: 18px; border-top: 1px solid var(--line); }
   .pickcard h2 { font-size: 26px; }
   .seg { margin-bottom: 0; }
@@ -92,7 +100,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .close { width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--soft); font-size: 22px; line-height: 1; cursor: pointer; color: var(--ink); }
 @media (min-width: 900px) {
   .intro-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 16px; }
-  .side { position: sticky; top: 16px; }
   .rev-card, .side > .actions { display: none; }
   .foot { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
   .foot > .actions { display: none; }
@@ -108,7 +115,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 @media (prefers-reduced-motion: reduce) { .advcard { transition: none !important; } }
 @media (min-width: 1200px) {
   .board { grid-template-columns: minmax(0, 1fr) 360px; }
-  .duo { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .board > .side { display: flex; flex-direction: column; align-self: stretch; order: 0; }
+  #modal { flex: 1; display: flex; flex-direction: column; }
+  #modal .costs { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+  #health { grid-row: auto; }
 }
 
 .card { background: var(--card); border-radius: 26px; padding: 22px; box-shadow: var(--shadow); min-width: 0; }
@@ -321,7 +331,6 @@ a { color: var(--lilac); }
       </div>
       <div class="card o6" id="funnel"></div>
       <div class="duo">
-        <div class="card o9" id="modal"></div>
         <div class="card o10" id="opex"></div>
       </div>
     </div>
@@ -329,6 +338,7 @@ a { color: var(--lilac); }
     <aside class="side">
       <div class="card health o4" id="health"></div>
       <div class="banner o5" id="banner"></div>
+      <div class="card o9" id="modal"></div>
       <div class="card o2 advcard" id="advcard" role="dialog" aria-label="Atur asumsi">
         <div class="drawer-head"><h3>Atur asumsi</h3><button type="button" class="close" id="adv-close" aria-label="Tutup panel asumsi">×</button></div>
         <details class="adv" id="adv">
