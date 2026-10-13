@@ -297,7 +297,7 @@ a { color: var(--lilac); }
 @media (min-width: 1200px) {
   .content { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .chead, .tabs, .bizpick { grid-column: 1 / -1; }
-  .board[data-tab="ring"] #banner { grid-column: 1 / -1; }
+  .board[data-tab="ring"] #banner, .board[data-tab="ring"] #payback, .board[data-tab="biaya"] #payback { grid-column: 1 / -1; }
   .board[data-tab="pel"] .content { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
   .board[data-tab="biaya"] .content { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
 }
@@ -331,6 +331,25 @@ a { color: var(--lilac); }
   .printonly dt { color: #6d6680; } .printonly dd { margin: 0; font-weight: 600; text-align: right; }
   .printonly p { font-size: 11px; color: #6d6680; margin: 8px 0 0; }
 }
+
+.payback { display: flex; flex-direction: column; gap: 18px; }
+.pb-range { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; }
+.pb-range li { display: flex; justify-content: space-between; gap: 12px; }
+.pb-range b { font-weight: 600; white-space: nowrap; }
+.pb-chart svg { display: block; width: 100%; height: auto; }
+.pb-chart line { stroke-width: 2; fill: none; }
+.pb-chart .zero { stroke: #c9c2d6; stroke-dasharray: 4 4; stroke-width: 1.2; }
+.pb-chart .l-mid { stroke: var(--coral); stroke-width: 3; stroke-linecap: round; }
+.pb-chart .l-hi { stroke: var(--good); stroke-dasharray: 6 5; }
+.pb-chart .l-lo { stroke: var(--lilac); stroke-dasharray: 6 5; }
+.pb-chart .dot-mid { fill: #fff; stroke: var(--coral); stroke-width: 3; }
+.pb-chart text { font-size: 11px; fill: var(--muted); font-family: var(--font-body); }
+.pb-leg { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.pb-leg i { display: inline-block; width: 18px; height: 0; border-top: 3px solid; margin-right: -8px; }
+.pb-leg .k-hi { border-color: var(--good); } .pb-leg .k-mid { border-color: var(--coral); } .pb-leg .k-lo { border-color: var(--lilac); }
+.pb-txt .hint { margin-top: 12px; }
+.pb-leg span { margin-left: auto; }
+@media (min-width: 900px) { #profit { display: flex; flex-direction: column; } #profit .stmt { flex: 1; justify-content: space-between; } .payback { display: grid; grid-template-columns: minmax(230px, 300px) minmax(0, 1fr); gap: 28px; align-items: center; } }
 </style>
 
 </head>
@@ -416,6 +435,7 @@ a { color: var(--lilac); }
         <div class="card o3" id="hero" data-t="ring"></div>
         <div class="card o8" id="profit" data-t="ring"></div>
       </div>
+      <div class="card o8 payback" id="payback" data-t="ring biaya"></div>
       <div class="card o6" id="funnel" data-t="pel"></div>
       <div class="duo">
         <div class="card o10" id="opex" data-t="biaya"></div>
@@ -875,15 +895,33 @@ a { color: var(--lilac); }
       '<div class="sub2">Pajak</div><ul class="costs"><li><span>PPh final UMKM ' + pct(TAX_RATE * 100) + '</span><b>' + rp(cm.tax) + "</b></li></ul>" +
       '<p class="hint" style="margin-top:8px">' + (cm.tax > 0 ? "Pajak " + pct(TAX_RATE * 100) + " hanya untuk omzet di atas " + rp(TAX_FREE) + " per tahun (wajib pajak orang pribadi)." : "Omzet setahun di bawah " + rp(TAX_FREE) + ", jadi belum kena PPh final untuk wajib pajak orang pribadi.") + "</p>";
     var bep = pr > 0 ? Math.ceil(cm.modalSum / pr) : null;
-    var lvl = pr <= 0 ? "bad" : bep <= 24 ? "ok" : "mid";
+    
     $("profit").innerHTML = '<div class="lbl">Perkiraan laba bersih per bulan</div><div class="rev-num ' + (pr < 0 ? "neg" : "pos") + '">' + (pr < 0 ? "−" : "") + rp(Math.abs(pr)) + "</div>" +
       '<div class="muted small">kisaran ' + (lo < 0 ? "−" : "") + rp(Math.abs(lo)) + " sampai " + (hi < 0 ? "−" : "") + rp(Math.abs(hi)) + ", mengikuti rentang omzet</div>" +
       '<ul class="stmt"><li><span>Omzet</span><b>' + rp(st.rev.p50) + "</b></li>" +
       "<li><span>Biaya tetap</span><b>−" + rp(cm.fixedSum) + "</b></li>" +
       (varSum > 0 ? "<li><span>Bahan baku, platform, kemasan</span><b>−" + rp(varSum) + "</b></li>" : "") +
       "<li><span>Pajak</span><b>−" + rp(cm.tax) + "</b></li>" +
-      '<li class="tot"><span>Laba bersih</span><b>' + (pr < 0 ? "−" : "") + rp(Math.abs(pr)) + "</b></li></ul>" +
-      '<div class="bep ' + lvl + '"><b>' + (bep ? bep + " bulan" : "Belum balik modal") + "</b><span>" + (bep ? "perkiraan waktu balik modal" + (bep > 36 ? ", terlalu lama untuk usaha kecil" : "") : "Dengan asumsi ini biaya bulanan lebih besar dari omzet. Ubah harga, biaya, atau lokasi.") + "</span></div>";
+      '<li class="tot"><span>Laba bersih</span><b>' + (pr < 0 ? "−" : "") + rp(Math.abs(pr)) + "</b></li></ul>" ;
+
+    var M = cm.modalSum, mo = function (v) { return v > 0 ? Math.ceil(M / v) : null; };
+    var mMid = bep, mFast = mo(hi), mSlow = mo(lo);
+    var horizon = Math.min(60, Math.max(24, (mMid || 0) + 6, mFast ? mFast + 6 : 0)), W = 620, H = 190, pl = 12, pr2 = 12, pt = 14, pb = 26;
+    var yMin = -M * 1.3, yMax = Math.max(pr * horizon - M, M * 0.2, 1);
+    var X = function (m) { return pl + (W - pl - pr2) * m / horizon; }, Y = function (v) { return pt + (H - pt - pb) * (yMax - v) / (yMax - yMin); };
+    var line = function (v, cls) { var x2 = horizon, y2 = -M + v * x2; if (y2 > yMax) { x2 = (yMax + M) / v; y2 = yMax; } else if (y2 < yMin) { x2 = (yMin + M) / v; y2 = yMin; } return '<line class="' + cls + '" x1="' + X(0) + '" y1="' + Y(-M) + '" x2="' + X(x2) + '" y2="' + Y(y2) + '"/>'; };
+    var ticks = ""; for (var t = 0; t <= horizon; t += (horizon > 36 ? 12 : 6)) ticks += '<text x="' + X(t) + '" y="' + (H - 6) + '" text-anchor="middle">' + t + "</text>";
+    var svg = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Grafik kas kumulatif per bulan setelah modal awal">' +
+      '<line class="zero" x1="' + pl + '" x2="' + (W - pr2) + '" y1="' + Y(0) + '" y2="' + Y(0) + '"/>' + line(hi, "l-hi") + line(lo, "l-lo") + line(pr, "l-mid") +
+      (mMid && mMid <= horizon ? '<circle class="dot-mid" cx="' + X(mMid) + '" cy="' + Y(0) + '" r="5"/>' : "") + ticks +
+      '<text class="ax" x="' + (W - pr2) + '" y="' + (Y(0) - 6) + '" text-anchor="end">balik modal</text><text class="ax" x="' + pl + '" y="' + (Y(-M) - 6) + '">modal −' + rp(M) + "</text></svg>";
+    var mtxt = function (m) { return m ? "bulan ke-" + m : "tidak balik modal"; };
+    $("payback").innerHTML = '<div class="pb-txt"><div class="lbl">Perkiraan balik modal</div>' +
+      '<div class="rev-num ' + (mMid ? (mMid <= 24 ? "pos" : "") : "neg") + '">' + (mMid ? "Bulan ke-" + mMid : "Belum balik modal") + "</div>" +
+      '<p class="muted small">' + (mMid ? "Modal awal " + rp(M) + " dibagi laba bersih " + rp(pr) + " per bulan" + (mMid > 36 ? ". Itu lebih dari 3 tahun, terlalu lama untuk usaha kecil." : ".") : "Dengan asumsi ini laba bersih masih negatif. Ubah harga, biaya, atau lokasi.") + "</p>" +
+      '<ul class="pb-range"><li><span>Optimis</span><b>' + mtxt(mFast) + "</b></li><li><span>Tengah</span><b>" + mtxt(mMid) + "</b></li><li><span>Pesimis</span><b>" + mtxt(mSlow) + "</b></li></ul>" +
+      '<p class="hint">Rentang mengikuti kisaran omzet P10 sampai P90. Laba dianggap stabil tiap bulan, tanpa kenaikan harga atau tambahan modal.</p></div>' +
+      '<div class="pb-chart">' + svg + '<div class="pb-leg"><i class="k-hi"></i>Optimis<i class="k-mid"></i>Tengah<i class="k-lo"></i>Pesimis<span>sumbu bawah: bulan</span></div></div>';
 
     var calNote = rp0.calibK ? " Minat pasar sudah disesuaikan dengan 1 bisnis pembanding (faktor " + fmt(rp0.calibK) + "×)." : "";
     $("status").innerHTML = '<div class="dot" aria-hidden="true">!</div><p><b>Belum divalidasi.</b> Galat di sini berasal dari ketidakpastian asumsi, bukan dari perbandingan dengan omzet nyata.' + calNote + (mode === "online" ? " Untuk bisnis online, pelanggan realistis dibatasi anggaran iklan." : "") + "</p>";
