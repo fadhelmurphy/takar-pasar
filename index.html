@@ -506,6 +506,8 @@ a { color: var(--lilac); }
     laundry: { staff: 2, wm: 1, rent: 4e6, rentUp: 12, renov: 15e6, alat: 60e6, stok: 3e6, izin: 2e6, cogs: 15, fee: 0, pack: 0, util: 3.5e6, net: 3e5, maint: 1e6, mkt: 1e6 },
     gym: { staff: 4, wm: 1.2, rent: 20e6, rentUp: 12, renov: 100e6, alat: 300e6, stok: 0, izin: 5e6, cogs: 0, fee: 0, pack: 0, util: 6e6, net: 8e5, maint: 3e6, mkt: 4e6 },
     les: { staff: 4, wm: 1, rent: 6e6, rentUp: 12, renov: 20e6, alat: 25e6, stok: 2e6, izin: 3e6, cogs: 5, fee: 0, pack: 0, util: 1.5e6, net: 5e5, maint: 5e5, mkt: 3e6 },
+    kerudung: { staff: 1, wm: 1, rent: 5e6, rentUp: 12, renov: 20e6, alat: 15e6, stok: 60e6, izin: 2e6, cogs: 55, fee: 0, pack: 1, util: 1.5e6, net: 3e5, maint: 3e5, mkt: 1.5e6 },
+    kerudungol: { staff: 2, wm: 1, rent: 2e6, rentUp: 12, renov: 0, alat: 8e6, stok: 40e6, izin: 3e6, cogs: 50, fee: 10, pack: 3, util: 5e5, net: 5e5, maint: 0, mkt: 1e6 },
     skincare: { staff: 2, wm: 1, rent: 2e6, rentUp: 12, renov: 0, alat: 10e6, stok: 50e6, izin: 15e6, cogs: 40, fee: 10, pack: 3, util: 5e5, net: 5e5, maint: 0, mkt: 1e6 },
     fashion: { staff: 2, wm: 1, rent: 2e6, rentUp: 12, renov: 0, alat: 10e6, stok: 40e6, izin: 3e6, cogs: 45, fee: 10, pack: 3, util: 5e5, net: 5e5, maint: 0, mkt: 1e6 },
     pangan: { staff: 2, wm: 1, rent: 2.5e6, rentUp: 12, renov: 5e6, alat: 25e6, stok: 15e6, izin: 5e6, cogs: 40, fee: 10, pack: 5, util: 1e6, net: 5e5, maint: 5e5, mkt: 1e6 },
@@ -527,10 +529,12 @@ a { color: var(--lilac); }
     laundry: { m: "local", n: "Laundry kiloan", seg: 40, need: 25, price: 35000, freq: 3, g: "linear-gradient(150deg,#8ea6d8,#6b7fc0)" },
     gym: { m: "local", n: "Gym", seg: 25, need: 8, price: 300000, freq: 1, g: "linear-gradient(150deg,#d9708a,#b84d6e)" },
     les: { m: "local", n: "Les / bimbel", seg: 20, need: 12, price: 400000, freq: 1, g: "linear-gradient(150deg,#8a85c6,#5f59a3)" },
+    kerudung: { m: "local", n: "Toko kerudung", seg: 35, need: 30, price: 85000, freq: 0.6, g: "linear-gradient(150deg,#7fcbb5,#3f9b8a)" },
     skincare: { m: "online", n: "Skincare", seg: 25, need: 30, price: 120000, rep: 3, cvr: 2.5, cpc: 1200, g: "linear-gradient(150deg,#ee9fb4,#d46a8e)" },
     fashion: { m: "online", n: "Fashion", seg: 30, need: 25, price: 180000, rep: 2, cvr: 1.8, cpc: 1000, g: "linear-gradient(150deg,#a776c2,#7a4c9e)" },
     pangan: { m: "online", n: "Makanan kemasan", seg: 35, need: 20, price: 60000, rep: 4, cvr: 3, cpc: 800, g: "linear-gradient(150deg,#f3a35c,#e2763f)" },
     kursus: { m: "online", n: "Kursus online", seg: 12, need: 10, price: 350000, rep: 1.2, cvr: 2, cpc: 1500, g: "linear-gradient(150deg,#7f9ad6,#5469b3)" },
+    kerudungol: { m: "online", n: "Kerudung online", seg: 35, need: 25, price: 85000, rep: 2.5, cvr: 2.2, cpc: 900, g: "linear-gradient(150deg,#8fd0a8,#47a37a)" },
     saas: { m: "online", n: "Software UKM", seg: 1.5, need: 8, price: 250000, rep: 8, cvr: 1, cpc: 5000, g: "linear-gradient(150deg,#4d4886,#262150)" }
   };
 
@@ -545,7 +549,7 @@ a { color: var(--lilac); }
   var PREFIX = { local: "l-", online: "o-" };
   var KEYS = { local: ["pop", "cov", "seg", "need", "price", "freq", "comp", "power", "ramp"], online: ["users", "seg", "need", "price", "rep", "budget", "cpc", "cvr", "org"] };
   var NSIM = 3000;
-  var DENS = { kafe: 1.5, gym: 0.3, les: 0.8, laundry: 1.5, barber: 0.8, makan: 6 };
+  var DENS = { kafe: 1.5, gym: 0.3, les: 0.8, laundry: 1.5, barber: 0.8, makan: 6, kerudung: 1.5 };
 
   var $ = function (id) { return document.getElementById(id); };
   var num = function (id) { var v = parseFloat($(id).value); return isFinite(v) ? v : 0; };
