@@ -63,15 +63,31 @@ button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-v
 .badge.beta { background: var(--lilac-soft); color: var(--lilac); box-shadow: none; }
 @media (max-width: 520px) { .badges { display: none; } }
 
-.cols { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); align-items: start; }
-@media (min-width: 780px) { .cols { grid-template-columns: minmax(0, 380px) minmax(0, 1fr); } .c3 { grid-column: 2; } }
-@media (min-width: 1140px) {
-  .cols { grid-template-columns: minmax(0, 380px) minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
-  .c3 { grid-column: auto; }
-  .c1 { position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow-y: auto; padding: 4px 14px 32px; margin: -4px -14px -32px; scrollbar-width: none; }
-  .c1::-webkit-scrollbar { display: none; }
+/* Ponsel: satu kolom, urutan diatur lewat order. Desktop: bilah pilihan lebar + area utama + panel samping. */
+.board { display: flex; flex-direction: column; gap: 20px; }
+.main, .duo, .side { display: contents; }
+.o1 { order: 1; } .o2 { order: 2; } .o3 { order: 3; } .o4 { order: 4; } .o5 { order: 5; } .o6 { order: 6; } .o7 { order: 7; }
+.o8 { order: 8; } .o9 { order: 9; } .o10 { order: 10; } .o11 { order: 11; } .o12 { order: 12; } .o13 { order: 13; } .o14 { order: 14; }
+.pickcard { margin-top: -46px; position: relative; }
+@media (min-width: 900px) {
+  .board { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 24px; align-items: start; }
+  .pick { grid-column: 1 / -1; }
+  .main, .side { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+  .duo { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .board > *, .main > *, .duo > *, .side > * { order: 0; }
+  .hero-ill { display: none; }
+  .pickcard { margin-top: 0; display: grid; grid-template-columns: minmax(230px, 280px) minmax(0, 1fr); grid-template-areas: "intro tiles" "fields fields"; gap: 20px 32px; padding: 26px 28px; }
+  .pickcard .intro { grid-area: intro; }
+  .pickcard .tiles { grid-area: tiles; display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); overflow: visible; padding: 4px; margin: 0; }
+  .pickcard .tile { width: auto; height: 124px; }
+  .pickcard .fields { grid-area: fields; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 0; padding-top: 18px; border-top: 1px solid var(--line); }
+  .pickcard h2 { font-size: 26px; }
+  .seg { margin-bottom: 0; }
 }
-.col { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+@media (min-width: 1200px) {
+  .board { grid-template-columns: minmax(0, 1fr) 360px; }
+  .duo { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
 
 .card { background: var(--card); border-radius: 26px; padding: 22px; box-shadow: var(--shadow); min-width: 0; }
 .card h2 { font-family: var(--font-display); font-weight: 700; font-size: 22px; line-height: 1.25; margin: 0; text-wrap: balance; }
@@ -181,6 +197,10 @@ details.adv > summary small { display: block; font-weight: 400; color: var(--mut
 .sub2 { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lilac); margin-top: 16px; }
 .rev-num.pos { color: var(--good); }
 .rev-num.neg { color: #c2453a; }
+.stmt { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 7px; font-size: 13.5px; }
+.stmt li { display: flex; justify-content: space-between; gap: 12px; }
+.stmt li b { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.stmt li.tot { border-top: 1px dashed var(--line); padding-top: 8px; font-weight: 700; }
 .bep { margin-top: 14px; padding: 14px 16px; border-radius: 18px; display: flex; flex-direction: column; gap: 2px; }
 .bep b { font-family: var(--font-display); font-size: 24px; font-weight: 700; }
 .bep span { font-size: 12.5px; color: var(--muted); }
@@ -233,8 +253,8 @@ a { color: var(--lilac); }
     </div>
   </header>
 
-  <div class="cols">
-    <section class="col c1" id="controls" aria-label="Pilihan bisnis dan daerah">
+  <div class="board" id="board">
+    <section class="pick o1" aria-label="Pilihan bisnis dan daerah">
       <div class="hero-ill">
         <svg viewBox="0 0 380 190" role="img" aria-label="Ilustrasi toko kecil dengan penanda lokasi">
           <circle cx="58" cy="44" r="5" fill="#fff" opacity=".6"/><circle cx="330" cy="30" r="4" fill="#fff" opacity=".7"/><circle cx="300" cy="120" r="3" fill="#fff" opacity=".6"/>
@@ -249,12 +269,14 @@ a { color: var(--lilac); }
           <g transform="translate(40 86)"><rect width="58" height="40" rx="9" fill="#fff"/><circle cx="14" cy="14" r="6" fill="#e8664f"/><rect x="10" y="26" width="38" height="4" rx="2" fill="#ecebf7"/></g>
         </svg>
       </div>
-      <div class="card" style="margin-top:-46px;position:relative">
-        <h2>Hai, mau buka bisnis apa?</h2>
-        <p class="muted small" style="margin:4px 0 0">Pilih jenis bisnis dan daerahnya. Angka lain terisi otomatis.</p>
-        <div class="seg" role="group" aria-label="Jenis bisnis">
-          <button type="button" id="seg-local" aria-pressed="true">Bisnis lokal</button>
-          <button type="button" id="seg-online" aria-pressed="false">Bisnis online</button>
+      <div class="card pickcard">
+        <div class="intro">
+          <h2>Hai, mau buka bisnis apa?</h2>
+          <p class="muted small" style="margin:4px 0 0">Pilih jenis bisnis dan daerahnya. Angka lain terisi otomatis.</p>
+          <div class="seg" role="group" aria-label="Jenis bisnis">
+            <button type="button" id="seg-local" aria-pressed="true">Bisnis lokal</button>
+            <button type="button" id="seg-online" aria-pressed="false">Bisnis online</button>
+          </div>
         </div>
         <div class="tiles" id="tiles" role="group" aria-label="Pilih jenis bisnis"></div>
         <div class="fields">
@@ -263,29 +285,33 @@ a { color: var(--lilac); }
           <div class="field"><label for="r-kec">Kecamatan</label><select id="r-kec"></select></div>
         </div>
       </div>
-      <div class="card">
+    </section>
+
+    <div class="main" aria-live="polite">
+      <div class="duo">
+        <div class="card o3" id="hero"></div>
+        <div class="card o8" id="profit"></div>
+      </div>
+      <div class="card o6" id="funnel"></div>
+      <div class="duo">
+        <div class="card o9" id="modal"></div>
+        <div class="card o10" id="opex"></div>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div class="card health o4" id="health"></div>
+      <div class="banner o5" id="banner"></div>
+      <div class="card o2">
         <details class="adv" id="adv">
-          <summary><span>Atur asumsi<small>Harga, minat, kompetitor, dan tingkat keyakinan</small></span></summary>
+          <summary><span>Atur asumsi<small>Harga, minat, kompetitor, biaya, dan tingkat keyakinan</small></span></summary>
           <div class="advbody" id="advbody"></div>
         </details>
       </div>
-    </section>
-
-    <section class="col c2" aria-live="polite">
-      <div class="card" id="hero"></div>
-      <div class="card health" id="health"></div>
-      <div class="card" id="profit"></div>
-      <div class="card" id="modal"></div>
-    </section>
-
-    <section class="col c3">
-      <div class="banner" id="banner"></div>
-      <div class="card" id="funnel"></div>
-      <div class="card" id="rev"></div>
-      <div class="card" id="opex"></div>
-      <div class="card status" id="status"></div>
-      <div class="card"><details class="calc"><summary>Rincian hitungan</summary><ul id="lines"></ul></details></div>
-      <div class="card">
+      <div class="card o7" id="rev"></div>
+      <div class="card status o11" id="status"></div>
+      <div class="card o12"><details class="calc"><summary>Rincian hitungan</summary><ul id="lines"></ul></details></div>
+      <div class="card o13">
         <details class="src"><summary>Sumber data</summary>
           <ul>
             <li>Penduduk kota: Sensus Penduduk 2020, BPS, dibulatkan. Penduduk nasional 284.430.900 jiwa, basis Survei APJII 2025.</li>
@@ -300,8 +326,8 @@ a { color: var(--lilac); }
           </ul>
         </details>
       </div>
-      <div class="actions"><button class="pill" id="copy" type="button">Salin ringkasan</button><span class="hint" id="copied" role="status"></span></div>
-    </section>
+      <div class="actions o14"><button class="pill" id="copy" type="button">Salin ringkasan</button><span class="hint" id="copied" role="status"></span></div>
+    </aside>
   </div>
 </main>
 
@@ -716,6 +742,11 @@ a { color: var(--lilac); }
     var lvl = pr <= 0 ? "bad" : bep <= 24 ? "ok" : "mid";
     $("profit").innerHTML = '<div class="lbl">Perkiraan laba bersih per bulan</div><div class="rev-num ' + (pr < 0 ? "neg" : "pos") + '">' + (pr < 0 ? "−" : "") + rp(Math.abs(pr)) + "</div>" +
       '<div class="muted small">kisaran ' + (lo < 0 ? "−" : "") + rp(Math.abs(lo)) + " sampai " + (hi < 0 ? "−" : "") + rp(Math.abs(hi)) + ", mengikuti rentang omzet</div>" +
+      '<ul class="stmt"><li><span>Omzet</span><b>' + rp(st.rev.p50) + "</b></li>" +
+      "<li><span>Biaya tetap</span><b>−" + rp(cm.fixedSum) + "</b></li>" +
+      (varSum > 0 ? "<li><span>Bahan baku, platform, kemasan</span><b>−" + rp(varSum) + "</b></li>" : "") +
+      "<li><span>Pajak</span><b>−" + rp(cm.tax) + "</b></li>" +
+      '<li class="tot"><span>Laba bersih</span><b>' + (pr < 0 ? "−" : "") + rp(Math.abs(pr)) + "</b></li></ul>" +
       '<div class="bep ' + lvl + '"><b>' + (bep ? bep + " bulan" : "Belum balik modal") + "</b><span>" + (bep ? "perkiraan waktu balik modal" + (bep > 36 ? ", terlalu lama untuk usaha kecil" : "") : "Dengan asumsi ini biaya bulanan lebih besar dari omzet. Ubah harga, biaya, atau lokasi.") + "</span></div>";
 
     var calNote = rp0.calibK ? " Minat pasar sudah disesuaikan dengan 1 bisnis pembanding (faktor " + fmt(rp0.calibK) + "×)." : "";
@@ -747,7 +778,7 @@ a { color: var(--lilac); }
     curBiz = k; renderTiles(); applyBiz(); applyComp(); sync(); render();
   }
 
-  $("controls").addEventListener("input", function (e) {
+  $("board").addEventListener("input", function (e) {
     var id = e.target.id;
     if (id === "r-prov") { fillCities(); fillKec(); applyRegion(); }
     if (id === "r-city") { fillKec(); applyRegion(); }
@@ -755,7 +786,7 @@ a { color: var(--lilac); }
     if (id === "l-cov") applyComp();
     sync(); render();
   });
-  $("controls").addEventListener("click", function (e) {
+  $("board").addEventListener("click", function (e) {
     var t = e.target.closest ? e.target.closest("[data-biz]") : null;
     if (t) { selectBiz(t.getAttribute("data-biz")); return; }
     if (e.target.id === "seg-local" && mode !== "local") setMode("local");
