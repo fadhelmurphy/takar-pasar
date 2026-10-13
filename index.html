@@ -224,7 +224,7 @@ a { color: var(--lilac); }
 @media (prefers-reduced-motion: reduce) { .tile, .ring circle { transition: none !important; } }
 
 /* ===== Desktop: kerangka aplikasi (sidebar pilihan + konten bertab) ===== */
-.side-brand, .chead, .tabs, .biz-search { display: none; }
+.side-brand, .chead, .tabs, .biz-search, .bizpick { display: none; }
 @media (min-width: 900px) {
   .top { display: none; }
   .wrap { padding-block: 24px 40px; }
@@ -252,6 +252,16 @@ a { color: var(--lilac); }
   .pickcard .tile b { font-size: 15px; }
   .pickcard .tile i { top: 50%; transform: translateY(-50%); right: 12px; }
   .pickcard .tile[aria-pressed="true"] { outline: 3px solid #fff; outline-offset: 2px; }
+  .bizpick { display: block; padding: 18px 20px 16px; }
+  .bizhead { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .bizpick .biz-search { width: 260px; max-width: 60%; margin: 0; background: var(--soft); padding: 9px 14px; font-size: 13.5px; }
+  .bizpick .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 10px; max-height: 136px; overflow-y: auto; overflow-x: hidden; padding: 4px 6px 4px 4px; margin: 0; scrollbar-width: thin; }
+  .bizpick .tile { width: auto; height: auto; min-height: 0; padding: 10px 38px 10px 14px; gap: 1px; justify-content: flex-start; border-radius: 16px; }
+  .bizpick .tile::after { right: -22px; bottom: -40px; }
+  .bizpick .tile b { font-size: 15px; }
+  .bizpick .tile i { top: 50%; transform: translateY(-50%); right: 12px; }
+  .bizpick .tile[aria-pressed="true"] { outline: 3px solid var(--navy); outline-offset: 2px; }
+  .bizpick .tiles .none { color: var(--muted); font-size: 13px; padding: 8px 4px; grid-column: 1 / -1; }
   .pickcard .fields { order: 5; margin: 4px 0 0; gap: 10px; }
   .pickcard .field label { color: rgba(255, 255, 255, 0.86); }
   .pickcard .field select { background-color: #fff; color: var(--ink); }
@@ -281,7 +291,7 @@ a { color: var(--lilac); }
 }
 @media (min-width: 1200px) {
   .content { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .chead, .tabs { grid-column: 1 / -1; }
+  .chead, .tabs, .bizpick { grid-column: 1 / -1; }
   .board[data-tab="ring"] #banner { grid-column: 1 / -1; }
   .board[data-tab="pel"] .content { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
   .board[data-tab="biaya"] .content { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
@@ -366,6 +376,7 @@ a { color: var(--lilac); }
       <button type="button" role="tab" data-tab="pel" aria-selected="false">Pelanggan</button>
       <button type="button" role="tab" data-tab="biaya" aria-selected="false">Modal &amp; biaya</button>
     </div>
+    <div class="card bizpick" id="bizpick"><div class="bizhead"><h3>Jenis bisnis</h3></div></div>
     <div class="main" aria-live="polite">
       <div class="duo">
         <div class="card o3" id="hero" data-t="ring"></div>
@@ -914,6 +925,14 @@ a { color: var(--lilac); }
   var board = document.getElementById("board"); if (!board) return;
   var pc = board.querySelector(".pickcard"), brand = document.querySelector(".top .brand");
   if (pc && brand) { var c = brand.cloneNode(true); c.classList.add("side-brand"); pc.insertBefore(c, pc.firstChild); }
+  var mq = window.matchMedia("(min-width: 900px)"), bp = document.getElementById("bizpick");
+  function place() {
+    var q0 = document.getElementById("biz-q"), t0 = document.getElementById("tiles"), fl = pc && pc.querySelector(".fields");
+    if (!q0 || !t0 || !bp || !fl) return;
+    if (mq.matches) { bp.querySelector(".bizhead").appendChild(q0); bp.appendChild(t0); }
+    else { pc.insertBefore(q0, fl); pc.insertBefore(t0, fl); }
+  }
+  place(); if (mq.addEventListener) mq.addEventListener("change", place);
   var q = document.getElementById("biz-q"), tl = document.getElementById("tiles"), busy = false;
   function filt() {
     if (!q || !tl || busy) return; busy = true;
