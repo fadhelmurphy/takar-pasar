@@ -1,0 +1,27 @@
+name: Pengingat data tahunan
+
+on:
+  schedule:
+    - cron: "0 2 5 1 *"  # 5 Januari: UMK baru berlaku
+    - cron: "0 2 20 8 *" # 20 Agustus: survei APJII biasanya terbit
+    - cron: "0 2 5 4 *"  # 5 April: laporan tahunan emiten
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  buka-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Buka issue pengingat
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JADWAL: ${{ github.event.schedule }}
+        run: |
+          case "$JADWAL" in
+            "0 2 5 1 *")  T="Perbarui UMK $(date +%Y) di data/dasar.json"; B="UMK tahun ini sudah berlaku. Ganti angka di upah.kota, tambahkan URL sumber di upah.url, lalu commit dengan [izinkan-lonjakan] karena kenaikan UMK biasanya lebih dari 5%." ;;
+            "0 2 20 8 *") T="Cek survei APJII $(date +%Y)"; B="Bila survei penetrasi internet APJII terbaru sudah terbit, perbarui internet.wilayah dan penduduk.nasional di data/dasar.json beserta URL sumbernya." ;;
+            *)            T="Cek laporan tahunan untuk pembanding omzet"; B="Perbarui pembanding.kafe (pendapatan, jumlah gerai, tahun, URL) dari laporan tahunan terbaru." ;;
+          esac
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "$T" --body "$B"

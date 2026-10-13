@@ -1,0 +1,151 @@
+{
+ "diperbarui": "2026-10-13",
+ "catatan": "Angka bersumber yang diperbarui manual lewat pull request. Setiap perubahan wajib menyertakan URL sumber.",
+ "penduduk": {
+  "sumber": "Sensus Penduduk 2020, BPS (dibulatkan). Nasional: basis Survei APJII 2025.",
+  "nasional": 284430900,
+  "kota": [
+   [
+    "DKI Jakarta",
+    "DKI Jakarta (seluruhnya)",
+    10560000
+   ],
+   [
+    "Jawa Timur",
+    "Kota Surabaya",
+    2880000
+   ],
+   [
+    "Jawa Barat",
+    "Kota Bekasi",
+    2560000
+   ],
+   [
+    "Jawa Barat",
+    "Kota Bandung",
+    2440000
+   ],
+   [
+    "Sumatera Utara",
+    "Kota Medan",
+    2430000
+   ],
+   [
+    "Jawa Barat",
+    "Kota Depok",
+    2060000
+   ],
+   [
+    "Banten",
+    "Kota Tangerang",
+    1900000
+   ],
+   [
+    "Sumatera Selatan",
+    "Kota Palembang",
+    1670000
+   ],
+   [
+    "Jawa Tengah",
+    "Kota Semarang",
+    1650000
+   ],
+   [
+    "Sulawesi Selatan",
+    "Kota Makassar",
+    1420000
+   ],
+   [
+    "Banten",
+    "Kota Tangerang Selatan",
+    1350000
+   ],
+   [
+    "Kepulauan Riau",
+    "Kota Batam",
+    1190000
+   ],
+   [
+    "Jawa Barat",
+    "Kota Bogor",
+    1040000
+   ],
+   [
+    "Jawa Timur",
+    "Kota Malang",
+    840000
+   ],
+   [
+    "Bali",
+    "Kota Denpasar",
+    726000
+   ],
+   [
+    "DI Yogyakarta",
+    "Kota Yogyakarta",
+    373000
+   ]
+  ]
+ },
+ "internet": {
+  "sumber": "Survei Penetrasi Internet APJII 2025",
+  "url": "https://inet.detik.com/telecommunication/d-8047759/survei-apjii-pengguna-internet-indonesia-2025-tembus-229-juta-jiwa",
+  "wilayah": {
+   "Jawa": 0.8469,
+   "Kalimantan": 0.7872,
+   "Sumatera": 0.7712,
+   "Bali dan Nusa Tenggara": 0.7686,
+   "Sulawesi": 0.7164,
+   "Maluku dan Papua": 0.6926,
+   "Nasional": 0.8066
+  }
+ },
+ "upah": {
+  "tahun": 2026,
+  "sumber": "UMK 2026 per kota; DKI Jakarta memakai UMP 2026. Denpasar: angka usulan wali kota.",
+  "url": [
+   "https://ekonomi.bisnis.com/read/20251226/259/1939723/siap-siap-dipajaki-ini-daftar-umk-2026-di-jawa-yang-lampaui-ptkp",
+   "https://www.metrotvnews.com/read/NLMC8GX3-berapa-ump-jakarta-2026-simak-nominal-dan-aturannya",
+   "https://www.detik.com/sumut/berita/d-8278149/daftar-umk-tahun-2026-33-kabupaten-kota-di-sumut-segini-besarannya",
+   "https://www.metrotvnews.com/read/NOlC9xp9-berapa-umk-makassar-di-2026-cek-besaran-terbarunya-di-sini",
+   "https://data.goodstats.id/statistic/simak-daftar-umk-sumatra-selatan-2026-HxIvG",
+   "https://dealls.com/pengembangan-karir/UMK-Malang",
+   "https://www.detik.com/bali/bisnis/d-8271244/umk-denpasar-2026-naik-jadi-rp-3-499-juta",
+   "https://www.industry.co.id/read/152368/daftar-gaji-umrumk-2026-di-seluruh-indonesia-lengkap-38-provinsi"
+  ],
+  "kota": {
+   "DKI Jakarta (seluruhnya)": 5729876,
+   "Kota Bekasi": 5999443,
+   "Kota Depok": 5522662,
+   "Kota Bogor": 5437203,
+   "Kota Tangerang": 5399405,
+   "Kota Batam": 5357982,
+   "Kota Surabaya": 5288796,
+   "Kota Tangerang Selatan": 5247870,
+   "Kota Bandung": 4737678,
+   "Kota Medan": 4335198,
+   "Kota Palembang": 4192837,
+   "Kota Makassar": 4148719,
+   "Kota Malang": 3736101,
+   "Kota Semarang": 3701709,
+   "Kota Denpasar": 3499879,
+   "Kota Yogyakarta": 2827593
+  }
+ },
+ "pembanding": {
+  "kafe": {
+   "nama": "Fore Coffee",
+   "tahun": 2025,
+   "pendapatan": 1497135000000,
+   "gerai_awal": 232,
+   "gerai_akhir": 322,
+   "url": "https://www.bareksa.com/berita/saham/2026-04-20/tahun-pertama-di-bursa-fore-coffee-bukukan-laba-rp90-miliar-ini-strategi-2026"
+  }
+ },
+ "pajak": {
+  "tarif": 0.005,
+  "bebas_per_tahun": 500000000,
+  "dasar": "PP 20/2026 (perubahan PP 55/2022)",
+  "url": "https://www.metrotvnews.com/read/kBVCMAM2-pajak-umkm-dipastikan-tak-naik-aturan-barunya-bahas-soal-ini"
+ }
+}

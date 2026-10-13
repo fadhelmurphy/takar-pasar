@@ -1,0 +1,62 @@
+name: Perbarui data kecamatan dan kompetitor
+
+on:
+  schedule:
+    - cron: "0 19 1 * *" # tanggal 2 tiap bulan, 02.00 WIB
+  workflow_dispatch:
+    inputs:
+      lewati_osm:
+        description: "Hanya perbarui penduduk (lewati hitungan kompetitor OSM)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  perbarui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    outputs:
+      berubah: ${{ steps.commit.outputs.berubah }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Pasang osmium
+        run: sudo apt-get update && sudo apt-get install -y osmium-tool
+      - run: pip install -r requirements.txt
+      - name: Cache batas wilayah dan WorldPop
+        uses: actions/cache@v4
+        with:
+          path: |
+            cache/idn_*.geojson
+            cache/worldpop_*.tif
+          key: wilayah-v1
+      - name: Bangun data
+        run: python scripts/build_data.py ${{ inputs.lewati_osm && '--skip-osm' || '' }}
+      - name: Periksa data
+        run: python scripts/validate.py --base HEAD
+      - id: commit
+        name: Simpan perubahan
+        run: |
+          if git diff --quiet -- data/; then
+            echo "Data tidak berubah."
+            echo "berubah=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "takar-pasar-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git commit -m "data: perbarui kecamatan dan kompetitor ($(date -u +%F))"
+          git push
+          echo "berubah=true" >> "$GITHUB_OUTPUT"
+
+  terbit:
+    needs: perbarui
+    if: needs.perbarui.outputs.berubah == 'true'
+    uses: ./.github/workflows/deploy.yml

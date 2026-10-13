@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Pilih jenis bisnis dan daerah, lihat potensi pelanggan, modal awal, biaya bulanan, laba, dan waktu balik modal.">
+<meta name="theme-color" content="#f6eeec">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='15' fill='%23f6a55e'/%3E%3Cpath d='M9 28.2h20V37a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2Z' fill='%23fff'/%3E%3Cpath d='M8.4 14h21.2l2.4 6.6v1.2a3.75 3.75 0 0 1-7.5 0 3.75 3.75 0 0 1-7.5 0 3.75 3.75 0 0 1-7.5 0v-1.2Z' fill='%23fff'/%3E%3Cpath d='M36 24.5s5.6-5 5.6-9.4a5.6 5.6 0 1 0-11.2 0c0 4.4 5.6 9.4 5.6 9.4Z' fill='%23262150'/%3E%3Ccircle cx='36' cy='15.1' r='2.1' fill='%23fff'/%3E%3C/svg%3E">
+<title>Takar Pasar</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: tiga kolom kartu mengambang di atas latar gradien pastel (pilih | hasil | rincian); dua kolom di tablet, satu kolom di ponsel.
+   Satu tema terang yang disengaja, mengikuti referensi desain. */
+:root {
+  color-scheme: light;
+  --bg: #f6eeec;
+  --card: #ffffff;
+  --soft: #f4f1f6;
+  --ink: #26213f;
+  --muted: #8a8399;
+  --line: #ece6ee;
+  --coral: #e8664f;
+  --coral-soft: #fbe3dc;
+  --navy: #262150;
+  --lilac: #7b76b8;
+  --lilac-soft: #ecebf7;
+  --good: #3f9b6e;
+  --warn: #c76a1e;
+  --shadow: 0 18px 40px -18px rgba(120, 70, 90, 0.28), 0 2px 6px rgba(120, 70, 90, 0.06);
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(38rem 30rem at 8% 12%, rgba(236, 160, 205, 0.55), transparent 70%),
+    radial-gradient(34rem 28rem at 92% 6%, rgba(206, 196, 238, 0.6), transparent 70%),
+    radial-gradient(40rem 32rem at 85% 92%, rgba(250, 205, 170, 0.55), transparent 70%),
+    radial-gradient(30rem 26rem at 12% 95%, rgba(214, 226, 240, 0.7), transparent 70%),
+    var(--bg);
+}
+.wrap { max-width: 1320px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 48px; }
+button, input, select { font: inherit; color: inherit; }
+button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--lilac); outline-offset: 2px; }
+
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px 16px; flex-wrap: wrap; margin-bottom: 22px; padding: 10px 12px 10px 10px; border-radius: 22px; background: rgba(255, 255, 255, 0.62); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 10px 30px -18px rgba(120, 70, 90, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.7); }
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.logo { width: 46px; height: 46px; flex: none; filter: drop-shadow(0 8px 14px rgba(220, 130, 60, 0.32)); }
+.logo svg { display: block; width: 100%; height: 100%; }
+.wordmark { font-family: var(--font-display); font-weight: 700; font-size: 21px; line-height: 1; letter-spacing: -0.015em; margin: 0; }
+.wordmark em { font-style: italic; font-weight: 600; color: var(--coral); }
+.tagline { margin: 4px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.3; }
+.badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--card); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); white-space: nowrap; }
+.badge i { width: 7px; height: 7px; border-radius: 50%; background: #f2b25a; }
+.badge.beta { background: var(--lilac-soft); color: var(--lilac); box-shadow: none; }
+@media (max-width: 520px) { .badges { display: none; } }
+
+.cols { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 780px) { .cols { grid-template-columns: minmax(0, 380px) minmax(0, 1fr); } .c3 { grid-column: 2; } }
+@media (min-width: 1140px) {
+  .cols { grid-template-columns: minmax(0, 380px) minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+  .c3 { grid-column: auto; }
+  .c1 { position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow-y: auto; padding: 4px 14px 32px; margin: -4px -14px -32px; scrollbar-width: none; }
+  .c1::-webkit-scrollbar { display: none; }
+}
+.col { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+
+.card { background: var(--card); border-radius: 26px; padding: 22px; box-shadow: var(--shadow); min-width: 0; }
+.card h2 { font-family: var(--font-display); font-weight: 700; font-size: 22px; line-height: 1.25; margin: 0; text-wrap: balance; }
+.card h3 { font-size: 15px; font-weight: 700; margin: 0; }
+.muted { color: var(--muted); }
+.small { font-size: 12.5px; }
+.lbl { font-size: 12px; font-weight: 600; color: var(--muted); }
+
+/* ilustrasi pembuka */
+.hero-ill { border-radius: 26px; overflow: hidden; background: linear-gradient(160deg, #f6c3c9, #f7d6c4 60%, #fbe7dc); box-shadow: var(--shadow); }
+.hero-ill svg { display: block; width: 100%; height: auto; }
+.greet { padding: 20px 22px 22px; background: var(--card); border-radius: 22px 22px 0 0; margin-top: -26px; position: relative; }
+.greet p { margin: 4px 0 0; color: var(--muted); font-size: 13.5px; }
+
+/* ubin jenis bisnis */
+.seg { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--soft); margin: 16px 0 12px; }
+.seg button { border: 0; background: none; padding: 7px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 2px 8px rgba(80, 60, 90, 0.12); }
+.tiles { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 7px 7px 12px; margin-inline: -7px; scrollbar-width: thin; }
+.tile { flex: none; width: 128px; height: 150px; border: 0; border-radius: 20px; padding: 14px; color: #fff; text-align: left; cursor: pointer; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; box-shadow: 0 10px 20px -12px rgba(90, 40, 60, 0.5); transition: transform 0.15s ease; }
+.tile::after { content: ""; position: absolute; right: -28px; bottom: -28px; width: 90px; height: 90px; border-radius: 50%; border: 14px solid rgba(255, 255, 255, 0.16); }
+.tile:hover { transform: translateY(-2px); }
+.tile b { font-family: var(--font-display); font-size: 17px; line-height: 1.15; font-weight: 700; position: relative; z-index: 1; }
+.tile span { font-size: 11.5px; opacity: 0.9; position: relative; z-index: 1; }
+.tile[aria-pressed="true"] { outline: 3px solid var(--navy); outline-offset: 3px; }
+.tile[aria-pressed="true"] i { display: grid; }
+.tile i { display: none; position: absolute; top: 10px; right: 10px; width: 22px; height: 22px; border-radius: 50%; background: #fff; color: var(--navy); place-items: center; font-style: normal; font-size: 13px; font-weight: 700; z-index: 1; }
+
+/* pilihan daerah */
+.fields { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.field { position: relative; }
+.field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin: 0 0 5px 4px; }
+.field select, .adv input[type="number"], .adv select { width: 100%; min-width: 0; border: 0; background: var(--soft); border-radius: 14px; padding: 12px 40px 12px 14px; font-size: 14.5px; appearance: none; -webkit-appearance: none; }
+.field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%238a8399' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; }
+.adv input[type="number"] { padding-right: 14px; font-variant-numeric: tabular-nums; }
+
+/* asumsi lanjutan */
+details.adv > summary { list-style: none; display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-weight: 700; }
+details.adv > summary::-webkit-details-marker { display: none; }
+details.adv > summary::after { content: "+"; width: 30px; height: 30px; border-radius: 50%; background: var(--coral-soft); color: var(--coral); display: grid; place-items: center; font-size: 18px; font-weight: 600; }
+details.adv[open] > summary::after { content: "–"; }
+details.adv > summary small { display: block; font-weight: 400; color: var(--muted); font-size: 12.5px; }
+.advbody { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.grp { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lilac); margin-top: 6px; }
+.f { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.fl { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.fl label { font-size: 13.5px; font-weight: 600; min-width: 0; }
+.adv select.q { width: auto; flex: none; padding: 4px 26px 4px 10px; font-size: 11.5px; border-radius: 999px; color: var(--muted); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%238a8399' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 9px center; }
+.rng { display: flex; align-items: center; gap: 12px; }
+.rng input { flex: 1; min-width: 0; accent-color: var(--coral); }
+.rng output { font-size: 13.5px; font-weight: 600; min-width: 5ch; text-align: right; font-variant-numeric: tabular-nums; }
+.hint { color: var(--muted); font-size: 12px; margin: 0; }
+.ghost { border: 1.5px dashed var(--line); background: none; border-radius: 14px; padding: 10px 14px; font-size: 13px; font-weight: 600; color: var(--lilac); cursor: pointer; }
+
+/* hasil utama */
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px 6px 9px; border-radius: 999px; background: var(--coral-soft); color: var(--coral); font-size: 12.5px; font-weight: 600; max-width: 100%; }
+.chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.big { font-family: var(--font-display); font-weight: 700; font-size: clamp(44px, 9vw, 64px); line-height: 1.05; letter-spacing: -0.02em; margin: 14px 0 2px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.big small { font-family: var(--font-body); font-size: 15px; font-weight: 500; color: var(--muted); letter-spacing: 0; margin-left: 6px; }
+.sentence { margin: 12px 0 0; font-size: 14.5px; }
+.bench { margin-top: 14px; padding: 12px 14px; border-radius: 16px; background: var(--soft); font-size: 12.5px; color: var(--muted); }
+.bench b { color: var(--ink); }
+
+.health { text-align: center; }
+.ring { position: relative; width: 168px; height: 168px; margin: 14px auto 6px; }
+.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring .num { position: absolute; inset: 0; display: grid; place-content: center; }
+.ring .num b { font-size: 40px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; }
+.ring .num span { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.verdict { font-weight: 700; font-size: 13.5px; }
+.verdict.ok { color: var(--good); }
+.verdict.mid, .verdict.bad { color: var(--warn); }
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 14px; margin-top: 18px; padding: 18px; border-radius: 20px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); text-align: left; }
+.stats b { display: block; font-size: 22px; font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.stats span { font-size: 11.5px; font-weight: 600; color: var(--coral); }
+.stats em { display: block; font-style: normal; font-size: 11.5px; color: var(--muted); }
+
+.banner { border-radius: 22px; padding: 20px 22px; color: #fff; background: linear-gradient(135deg, #8a85c6, #6e68ad); box-shadow: 0 18px 36px -18px rgba(70, 60, 140, 0.6); position: relative; overflow: hidden; }
+.banner::after { content: ""; position: absolute; right: -40px; bottom: -50px; width: 170px; height: 120px; border-radius: 50%; background: rgba(255, 255, 255, 0.12); transform: rotate(-18deg); }
+.banner h3 { font-size: 16px; font-weight: 600; margin: 0; position: relative; }
+.banner ol { margin: 12px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 1; }
+.banner li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; font-size: 13.5px; }
+.banner li em { font-style: normal; opacity: 0.85; font-size: 12.5px; }
+.banner li i { grid-column: 1 / -1; height: 5px; border-radius: 3px; background: rgba(255, 255, 255, 0.22); position: relative; }
+.banner li i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--w); border-radius: 3px; background: #fff; }
+
+.tier { display: flex; flex-direction: column; gap: 6px; padding-block: 12px; border-bottom: 1px solid var(--line); }
+.tier:last-of-type { border-bottom: 0; padding-bottom: 4px; }
+.tier .row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.tier .row b { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tier .rg { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.track { position: relative; height: 10px; border-radius: 6px; background: var(--soft); }
+.track i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 6px; display: block; }
+.track .band { background: #f7cfc3; }
+.track .bar { background: linear-gradient(90deg, #f19a7c, var(--coral)); }
+.track .lo { width: 3px; background: var(--navy); border-radius: 2px; top: -3px; bottom: -3px; }
+
+.meter { height: 6px; border-radius: 4px; background: var(--line); margin-top: 10px; overflow: hidden; }
+.meter i { display: block; height: 100%; background: #f2b25a; border-radius: 4px; }
+.rev-num { font-size: 28px; font-weight: 600; margin-top: 4px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+
+.costs { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+.costs li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; font-size: 13.5px; }
+.costs li b { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.costs li i { grid-column: 1 / -1; height: 5px; border-radius: 3px; background: var(--soft); position: relative; }
+.costs li i::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--w); border-radius: 3px; background: linear-gradient(90deg, #c9c6ea, var(--lilac)); }
+.sub2 { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lilac); margin-top: 16px; }
+.rev-num.pos { color: var(--good); }
+.rev-num.neg { color: #c2453a; }
+.bep { margin-top: 14px; padding: 14px 16px; border-radius: 18px; display: flex; flex-direction: column; gap: 2px; }
+.bep b { font-family: var(--font-display); font-size: 24px; font-weight: 700; }
+.bep span { font-size: 12.5px; color: var(--muted); }
+.bep.ok { background: #e4f3ea; } .bep.ok b { color: var(--good); }
+.bep.mid { background: #fdf0dd; } .bep.mid b { color: var(--warn); }
+.bep.bad { background: var(--coral-soft); } .bep.bad b { color: #c2453a; }
+.status { display: flex; gap: 12px; align-items: flex-start; }
+.status .dot { flex: none; width: 36px; height: 36px; border-radius: 50%; background: var(--coral-soft); color: var(--coral); display: grid; place-items: center; font-weight: 700; }
+.status p { margin: 0; font-size: 13px; color: var(--muted); }
+.status p b { color: var(--ink); }
+
+.actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.pill { border: 0; background: var(--navy); color: #fff; border-radius: 999px; padding: 13px 26px; font-weight: 600; font-size: 14px; cursor: pointer; box-shadow: 0 12px 22px -10px rgba(38, 33, 80, 0.7); }
+.pill:hover { background: #342d6b; }
+details.src summary { font-weight: 700; cursor: pointer; }
+details.src ul, details.calc ul { margin: 12px 0 0; padding-left: 18px; font-size: 12.5px; color: var(--muted); display: flex; flex-direction: column; gap: 8px; overflow-wrap: anywhere; }
+details.calc summary { font-weight: 700; cursor: pointer; }
+a { color: var(--lilac); }
+@media (prefers-reduced-motion: reduce) { .tile, .ring circle { transition: none !important; } }
+</style>
+
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 48 48">
+          <rect width="48" height="48" rx="15" fill="#f6a55e"/>
+          <!-- toko -->
+          <g transform="translate(-3 1)">
+          <path d="M12 27.2h20V36a2 2 0 0 1-2 2H14a2 2 0 0 1-2-2Z" fill="#fff"/>
+          <path d="M11.4 13h21.2l2.4 6.6v1.2a3.75 3.75 0 0 1-7.5 0 3.75 3.75 0 0 1-7.5 0 3.75 3.75 0 0 1-7.5 0v-1.2Z" fill="#fff"/>
+          <path d="M18.6 13l-.9 7.8M25.4 13l.9 7.8" stroke="#f6a55e" stroke-width="1.3" stroke-linecap="round"/>
+          <rect x="19.5" y="30.5" width="5" height="7.5" rx="1" fill="#e8664f"/>
+          </g>
+          <!-- penanda lokasi -->
+          <path d="M36 24.5s5.6-5 5.6-9.4a5.6 5.6 0 1 0-11.2 0c0 4.4 5.6 9.4 5.6 9.4Z" fill="#262150" stroke="#f6a55e" stroke-width="2.4" stroke-linejoin="round"/>
+          <circle cx="36" cy="15.1" r="2.1" fill="#fff"/>
+        </svg>
+      </div>
+      <div style="min-width:0">
+        <h1 class="wordmark">Takar <em>Pasar</em></h1>
+        <p class="tagline">Kenali calon pelangganmu sebelum buka usaha</p>
+      </div>
+    </div>
+    <div class="badges">
+      <span class="badge"><i></i><span id="databadge">Data bawaan Okt 2026</span></span>
+      <span class="badge beta">Beta</span>
+    </div>
+  </header>
+
+  <div class="cols">
+    <section class="col c1" id="controls" aria-label="Pilihan bisnis dan daerah">
+      <div class="hero-ill">
+        <svg viewBox="0 0 380 190" role="img" aria-label="Ilustrasi toko kecil dengan penanda lokasi">
+          <circle cx="58" cy="44" r="5" fill="#fff" opacity=".6"/><circle cx="330" cy="30" r="4" fill="#fff" opacity=".7"/><circle cx="300" cy="120" r="3" fill="#fff" opacity=".6"/>
+          <path d="M-10 160 C 80 120, 160 190, 250 150 S 380 130, 400 150 L400 200 L-10 200Z" fill="#fbe7dc"/>
+          <rect x="112" y="70" width="150" height="96" rx="10" fill="#fff"/>
+          <rect x="102" y="56" width="170" height="26" rx="8" fill="#e8664f"/>
+          <path d="M102 82 h170 l-8 14 c-6 8 -15 8 -21 0 c-6 8 -15 8 -21 0 c-6 8 -15 8 -21 0 c-6 8 -15 8 -21 0 c-6 8 -15 8 -21 0 c-6 8 -15 8 -21 0 c-6 8 -15 8 -21 0 c-6 8 -15 8 -21 0Z" fill="#f19a7c"/>
+          <rect x="130" y="108" width="44" height="58" rx="6" fill="#262150"/>
+          <rect x="190" y="108" width="56" height="34" rx="6" fill="#ecebf7"/>
+          <path d="M196 132 l10 -10 8 6 12 -12 14 10" fill="none" stroke="#7b76b8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <g transform="translate(288 54)"><path d="M22 58s20-18 20-34A20 20 0 1 0 2 24c0 16 20 34 20 34Z" fill="#7b76b8"/><circle cx="22" cy="23" r="8" fill="#fff"/></g>
+          <g transform="translate(40 86)"><rect width="58" height="40" rx="9" fill="#fff"/><circle cx="14" cy="14" r="6" fill="#e8664f"/><rect x="10" y="26" width="38" height="4" rx="2" fill="#ecebf7"/></g>
+        </svg>
+      </div>
+      <div class="card" style="margin-top:-46px;position:relative">
+        <h2>Hai, mau buka bisnis apa?</h2>
+        <p class="muted small" style="margin:4px 0 0">Pilih jenis bisnis dan daerahnya. Angka lain terisi otomatis.</p>
+        <div class="seg" role="group" aria-label="Jenis bisnis">
+          <button type="button" id="seg-local" aria-pressed="true">Bisnis lokal</button>
+          <button type="button" id="seg-online" aria-pressed="false">Bisnis online</button>
+        </div>
+        <div class="tiles" id="tiles" role="group" aria-label="Pilih jenis bisnis"></div>
+        <div class="fields">
+          <div class="field"><label for="r-prov">Provinsi</label><select id="r-prov"></select></div>
+          <div class="field"><label for="r-city">Kota atau kabupaten</label><select id="r-city"></select></div>
+          <div class="field"><label for="r-kec">Kecamatan</label><select id="r-kec"></select></div>
+        </div>
+      </div>
+      <div class="card">
+        <details class="adv" id="adv">
+          <summary><span>Atur asumsi<small>Harga, minat, kompetitor, dan tingkat keyakinan</small></span></summary>
+          <div class="advbody" id="advbody"></div>
+        </details>
+      </div>
+    </section>
+
+    <section class="col c2" aria-live="polite">
+      <div class="card" id="hero"></div>
+      <div class="card health" id="health"></div>
+      <div class="card" id="profit"></div>
+      <div class="card" id="modal"></div>
+    </section>
+
+    <section class="col c3">
+      <div class="banner" id="banner"></div>
+      <div class="card" id="funnel"></div>
+      <div class="card" id="rev"></div>
+      <div class="card" id="opex"></div>
+      <div class="card status" id="status"></div>
+      <div class="card"><details class="calc"><summary>Rincian hitungan</summary><ul id="lines"></ul></details></div>
+      <div class="card">
+        <details class="src"><summary>Sumber data</summary>
+          <ul>
+            <li>Penduduk kota: Sensus Penduduk 2020, BPS, dibulatkan. Penduduk nasional 284.430.900 jiwa, basis Survei APJII 2025.</li>
+            <li>Penetrasi internet per wilayah: <a href="https://inet.detik.com/telecommunication/d-8047759/survei-apjii-pengguna-internet-indonesia-2025-tembus-229-juta-jiwa" target="_blank" rel="noopener">Survei APJII 2025</a>.</li>
+            <li>Pembanding kafe: Fore Coffee 2025, pendapatan bersih Rp1,5 triliun dari 232 sampai 322 gerai (<a href="https://www.bareksa.com/berita/saham/2026-04-20/tahun-pertama-di-bursa-fore-coffee-bukukan-laba-rp90-miliar-ini-strategi-2026" target="_blank" rel="noopener">Bareksa</a>).</li>
+            <li>Gaji: UMK 2026 per kota (Jakarta memakai UMP 2026), dari <a href="https://ekonomi.bisnis.com/read/20251226/259/1939723/siap-siap-dipajaki-ini-daftar-umk-2026-di-jawa-yang-lampaui-ptkp" target="_blank" rel="noopener">Bisnis.com</a>, <a href="https://www.metrotvnews.com/read/NLMC8GX3-berapa-ump-jakarta-2026-simak-nominal-dan-aturannya" target="_blank" rel="noopener">Metro TV</a>, <a href="https://www.detik.com/sumut/berita/d-8278149/daftar-umk-tahun-2026-33-kabupaten-kota-di-sumut-segini-besarannya" target="_blank" rel="noopener">detikSumut</a>, <a href="https://data.goodstats.id/statistic/simak-daftar-umk-sumatra-selatan-2026-HxIvG" target="_blank" rel="noopener">GoodStats</a>, <a href="https://dealls.com/pengembangan-karir/UMK-Malang" target="_blank" rel="noopener">Dealls</a>, dan <a href="https://www.detik.com/bali/bisnis/d-8271244/umk-denpasar-2026-naik-jadi-rp-3-499-juta" target="_blank" rel="noopener">detikBali</a> (Denpasar: angka usulan wali kota). Ditambah THR satu kali gaji per tahun.</li>
+            <li>Pajak: PPh final UMKM 0,5%, omzet sampai Rp500 juta per tahun bebas pajak untuk orang pribadi (<a href="https://www.metrotvnews.com/read/kBVCMAM2-pajak-umkm-dipastikan-tak-naik-aturan-barunya-bahas-soal-ini" target="_blank" rel="noopener">PP 20/2026</a>). PT dan CV dikenai aturan berbeda.</li>
+            <li>Sewa, renovasi, peralatan, stok, izin, listrik, bahan baku, dan biaya platform: asumsi awal acuan Kota Tangerang, disesuaikan dengan rasio UMK kota terpilih. Belum bersumber.</li>
+            <li>Segmen, minat, harga, frekuensi, kepadatan kompetitor, konversi, dan biaya per klik: asumsi awal tanpa sumber terverifikasi.</li>
+            <li>Galat: simulasi 3.000 skenario, tiap asumsi diacak sesuai keyakinannya (terukur ±10%, model ±15%, perkiraan ±25%, tebakan ±45%), rentang P10 sampai P90.</li>
+            <li id="datastat"></li>
+          </ul>
+        </details>
+      </div>
+      <div class="actions"><button class="pill" id="copy" type="button">Salin ringkasan</button><span class="hint" id="copied" role="status"></span></div>
+    </section>
+  </div>
+</main>
+
+<script>
+(function () {
+  /* Data awal tingkat kota (Sensus 2020, dibulatkan). Data kecamatan dimuat dari data/kecamatan.json bila ada. */
+  var SEED = [
+    ["DKI Jakarta", "DKI Jakarta (seluruhnya)", 10560000], ["Jawa Timur", "Kota Surabaya", 2880000], ["Jawa Barat", "Kota Bekasi", 2560000],
+    ["Jawa Barat", "Kota Bandung", 2440000], ["Sumatera Utara", "Kota Medan", 2430000], ["Jawa Barat", "Kota Depok", 2060000],
+    ["Banten", "Kota Tangerang", 1900000], ["Sumatera Selatan", "Kota Palembang", 1670000], ["Jawa Tengah", "Kota Semarang", 1650000],
+    ["Sulawesi Selatan", "Kota Makassar", 1420000], ["Banten", "Kota Tangerang Selatan", 1350000], ["Kepulauan Riau", "Kota Batam", 1190000],
+    ["Jawa Barat", "Kota Bogor", 1040000], ["Jawa Timur", "Kota Malang", 840000], ["Bali", "Kota Denpasar", 726000], ["DI Yogyakarta", "Kota Yogyakarta", 373000]
+  ];
+  var ALL = "Seluruh Indonesia";
+  /* Penetrasi internet per wilayah, Survei APJII 2025 */
+  var INET_G = { Jawa: 0.8469, Kalimantan: 0.7872, Sumatera: 0.7712, "Bali dan Nusa Tenggara": 0.7686, Sulawesi: 0.7164, "Maluku dan Papua": 0.6926, Nasional: 0.8066 };
+  function inetGroup(prov) {
+    var p = (prov || "").toLowerCase();
+    if (prov === ALL) return "Nasional";
+    if (/jawa|jakarta|banten|yogyakarta/.test(p)) return "Jawa";
+    if (/kalimantan/.test(p)) return "Kalimantan";
+    if (/sulawesi|gorontalo/.test(p)) return "Sulawesi";
+    if (/papua|maluku/.test(p)) return "Maluku dan Papua";
+    if (/bali|nusa tenggara/.test(p)) return "Bali dan Nusa Tenggara";
+    return "Sumatera";
+  }
+  /* Fore Coffee 2025: pendapatan bersih Rp1.497.135 juta, gerai 232 (akhir 2024) dan 322 (akhir 2025) */
+  var FORE_MONTH = 1497135e6 / ((232 + 322) / 2) / 12, FORE_NOTE = "rata-rata gerai Fore Coffee tahun 2025";
+  /* UMK 2026 per kota (Jakarta: UMP). Sumber: Bisnis.com, detikSumut, Metro TV, GoodStats, Dealls, detikBali */
+  var UMK = {
+    "DKI Jakarta (seluruhnya)": 5729876, "Kota Bekasi": 5999443, "Kota Depok": 5522662, "Kota Bogor": 5437203, "Kota Tangerang": 5399405,
+    "Kota Batam": 5357982, "Kota Surabaya": 5288796, "Kota Tangerang Selatan": 5247870, "Kota Bandung": 4737678, "Kota Medan": 4335198,
+    "Kota Palembang": 4192837, "Kota Makassar": 4148719, "Kota Malang": 3736101, "Kota Semarang": 3701709, "Kota Denpasar": 3499879, "Kota Yogyakarta": 2827593
+  };
+  var TAX_RATE = 0.005, TAX_FREE = 5e8; /* PP 20/2026 */
+  var UMK_REF = 5399405; /* Kota Tangerang, acuan skala biaya sewa */
+  /* Asumsi biaya per jenis bisnis, acuan Kota Tangerang. Belum bersumber; ditandai Perkiraan.
+     staff: orang, wm: pengali UMK, rent: sewa per bulan, rentUp: bulan sewa dibayar di muka, renov, alat, stok, izin: modal (Rp),
+     cogs: % omzet untuk bahan atau barang, fee: % omzet untuk platform, pack: % omzet untuk kemasan, util/net/maint/mkt: per bulan (Rp) */
+  var COST = {
+    kafe: { staff: 3, wm: 1, rent: 8e6, rentUp: 12, renov: 40e6, alat: 60e6, stok: 10e6, izin: 3e6, cogs: 35, fee: 0, pack: 0, util: 3e6, net: 6e5, maint: 1e6, mkt: 2e6 },
+    makan: { staff: 3, wm: 1, rent: 5e6, rentUp: 12, renov: 25e6, alat: 30e6, stok: 8e6, izin: 2e6, cogs: 45, fee: 0, pack: 0, util: 2e6, net: 3e5, maint: 5e5, mkt: 1e6 },
+    barber: { staff: 3, wm: 1, rent: 5e6, rentUp: 12, renov: 30e6, alat: 35e6, stok: 3e6, izin: 2e6, cogs: 5, fee: 0, pack: 0, util: 1.5e6, net: 4e5, maint: 5e5, mkt: 1.5e6 },
+    laundry: { staff: 2, wm: 1, rent: 4e6, rentUp: 12, renov: 15e6, alat: 60e6, stok: 3e6, izin: 2e6, cogs: 15, fee: 0, pack: 0, util: 3.5e6, net: 3e5, maint: 1e6, mkt: 1e6 },
+    gym: { staff: 4, wm: 1.2, rent: 20e6, rentUp: 12, renov: 100e6, alat: 300e6, stok: 0, izin: 5e6, cogs: 0, fee: 0, pack: 0, util: 6e6, net: 8e5, maint: 3e6, mkt: 4e6 },
+    les: { staff: 4, wm: 1, rent: 6e6, rentUp: 12, renov: 20e6, alat: 25e6, stok: 2e6, izin: 3e6, cogs: 5, fee: 0, pack: 0, util: 1.5e6, net: 5e5, maint: 5e5, mkt: 3e6 },
+    skincare: { staff: 2, wm: 1, rent: 2e6, rentUp: 12, renov: 0, alat: 10e6, stok: 50e6, izin: 15e6, cogs: 40, fee: 10, pack: 3, util: 5e5, net: 5e5, maint: 0, mkt: 1e6 },
+    fashion: { staff: 2, wm: 1, rent: 2e6, rentUp: 12, renov: 0, alat: 10e6, stok: 40e6, izin: 3e6, cogs: 45, fee: 10, pack: 3, util: 5e5, net: 5e5, maint: 0, mkt: 1e6 },
+    pangan: { staff: 2, wm: 1, rent: 2.5e6, rentUp: 12, renov: 5e6, alat: 25e6, stok: 15e6, izin: 5e6, cogs: 40, fee: 10, pack: 5, util: 1e6, net: 5e5, maint: 5e5, mkt: 1e6 },
+    kursus: { staff: 1, wm: 1.5, rent: 0, rentUp: 0, renov: 0, alat: 15e6, stok: 0, izin: 2e6, cogs: 5, fee: 5, pack: 0, util: 3e5, net: 5e5, maint: 0, mkt: 1.5e6 },
+    saas: { staff: 3, wm: 2.5, rent: 0, rentUp: 0, renov: 0, alat: 30e6, stok: 0, izin: 3e6, cogs: 10, fee: 3, pack: 0, util: 3e5, net: 1e6, maint: 0, mkt: 3e6 }
+  };
+  var REG = {}, dataInfo = null;
+  function seedReg(rows, nat) {
+    REG = {};
+    rows.forEach(function (r) { (REG[r[0]] = REG[r[0]] || {})[r[1]] = { pop: r[2], kec: [], popQ: "0.10" }; });
+    REG[ALL] = {}; REG[ALL][ALL] = { pop: nat, kec: [], popQ: "0.10" };
+  }
+  seedReg(SEED, 284430900);
+
+  var BIZ = {
+    kafe: { m: "local", n: "Kafe", seg: 30, need: 35, price: 45000, freq: 3, g: "linear-gradient(150deg,#f08a63,#e8664f 60%,#d9534a)" },
+    makan: { m: "local", n: "Warung makan", seg: 70, need: 40, price: 30000, freq: 6, g: "linear-gradient(150deg,#f6b26b,#ee8a4f)" },
+    barber: { m: "local", n: "Barbershop", seg: 20, need: 55, price: 40000, freq: 1.5, g: "linear-gradient(150deg,#b7639a,#8f3f78)" },
+    laundry: { m: "local", n: "Laundry kiloan", seg: 40, need: 25, price: 35000, freq: 3, g: "linear-gradient(150deg,#8ea6d8,#6b7fc0)" },
+    gym: { m: "local", n: "Gym", seg: 25, need: 8, price: 300000, freq: 1, g: "linear-gradient(150deg,#d9708a,#b84d6e)" },
+    les: { m: "local", n: "Les / bimbel", seg: 20, need: 12, price: 400000, freq: 1, g: "linear-gradient(150deg,#8a85c6,#5f59a3)" },
+    skincare: { m: "online", n: "Skincare", seg: 25, need: 30, price: 120000, rep: 3, cvr: 2.5, cpc: 1200, g: "linear-gradient(150deg,#ee9fb4,#d46a8e)" },
+    fashion: { m: "online", n: "Fashion", seg: 30, need: 25, price: 180000, rep: 2, cvr: 1.8, cpc: 1000, g: "linear-gradient(150deg,#a776c2,#7a4c9e)" },
+    pangan: { m: "online", n: "Makanan kemasan", seg: 35, need: 20, price: 60000, rep: 4, cvr: 3, cpc: 800, g: "linear-gradient(150deg,#f3a35c,#e2763f)" },
+    kursus: { m: "online", n: "Kursus online", seg: 12, need: 10, price: 350000, rep: 1.2, cvr: 2, cpc: 1500, g: "linear-gradient(150deg,#7f9ad6,#5469b3)" },
+    saas: { m: "online", n: "Software UKM", seg: 1.5, need: 8, price: 250000, rep: 8, cvr: 1, cpc: 5000, g: "linear-gradient(150deg,#4d4886,#262150)" }
+  };
+
+  var QUAL = [["0.10", "Terukur"], ["0.15", "Model"], ["0.25", "Perkiraan"], ["0.45", "Tebakan"]];
+  var QNAME = { "0.10": "Terukur", "0.15": "Model", "0.20": "Terkalibrasi", "0.25": "Perkiraan", "0.45": "Tebakan" };
+  var LQ = { pop: "0.10", cov: "0.25", seg: "0.25", need: "0.45", price: "0.10", freq: "0.25", comp: "0.45", power: "0.25", ramp: "0.25" };
+  var OQ = { users: "0.15", seg: "0.25", need: "0.45", price: "0.10", rep: "0.25", cpc: "0.25", cvr: "0.45", org: "0.45" };
+  var NAMES = {
+    local: { pop: "Penduduk wilayah", cov: "Cakupan area", seg: "Segmen target", need: "Yang berminat", price: "Harga", freq: "Transaksi per bulan", comp: "Jumlah kompetitor", power: "Daya saing", ramp: "Realisasi tahun pertama" },
+    online: { users: "Pengguna internet", seg: "Segmen target", need: "Yang berminat", price: "Harga", rep: "Pembelian ulang", cpc: "Biaya per klik", cvr: "Konversi", org: "Penjualan organik" }
+  };
+  var PREFIX = { local: "l-", online: "o-" };
+  var KEYS = { local: ["pop", "cov", "seg", "need", "price", "freq", "comp", "power", "ramp"], online: ["users", "seg", "need", "price", "rep", "budget", "cpc", "cvr", "org"] };
+  var NSIM = 3000;
+  var DENS = { kafe: 1.5, gym: 0.3, les: 0.8, laundry: 1.5, barber: 0.8, makan: 6 };
+
+  var $ = function (id) { return document.getElementById(id); };
+  var num = function (id) { var v = parseFloat($(id).value); return isFinite(v) ? v : 0; };
+  var clamp = function (v, a, b) { return Math.min(b === undefined ? 1 : b, Math.max(a === undefined ? 0 : a, v)); };
+  function fmt(v) { return v.toLocaleString("id-ID", { maximumFractionDigits: v < 10 ? 1 : 0 }); }
+  function compact(n) {
+    if (!isFinite(n)) return "–";
+    if (n >= 1e12) return fmt(n / 1e12) + " triliun";
+    if (n >= 1e9) return fmt(n / 1e9) + " miliar";
+    if (n >= 1e6) return fmt(n / 1e6) + " juta";
+    if (n >= 1e4) return fmt(n / 1e3) + " ribu";
+    return Math.round(n).toLocaleString("id-ID");
+  }
+  var rp = function (n) { return "Rp " + compact(n); };
+  var pct = function (v) { return v.toLocaleString("id-ID", { maximumFractionDigits: 1 }) + "%"; };
+
+  /* ---------- form asumsi ---------- */
+  function opts(list) { return list.map(function (o) { return '<option value="' + o[0] + '">' + o[1] + "</option>"; }).join(""); }
+  function lab(id, label, q) { return '<div class="fl"><label for="' + id + '">' + label + "</label>" + (q ? '<select class="q" id="' + id + '-q" aria-label="Keyakinan data: ' + label + '">' + opts(QUAL) + "</select>" : "") + "</div>"; }
+  function numf(id, label, step, hint, q) { return '<div class="f">' + lab(id, label, q) + '<input id="' + id + '" type="number" min="0" step="' + step + '" inputmode="decimal">' + (hint || id === "l-comp" || id === "o-users" || id === "c-wage" ? '<p class="hint" id="' + id + '-h">' + hint + "</p>" : "") + "</div>"; }
+  function rngf(id, label, min, max, step, unit, hint, q) { return '<div class="f">' + lab(id, label, q) + '<div class="rng"><input id="' + id + '" type="range" min="' + min + '" max="' + max + '" step="' + step + '" data-unit="' + unit + '"><output id="' + id + '-o" for="' + id + '"></output></div>' + (hint ? '<p class="hint">' + hint + "</p>" : "") + "</div>"; }
+  var grp = function (t) { return '<div class="grp">' + t + "</div>"; };
+  var COSTF = grp("Biaya") + numf("c-staff", "Jumlah karyawan", 1, "") + numf("c-wage", "Gaji per karyawan per bulan (Rp)", 50000, "") +
+    numf("c-rent", "Sewa tempat per bulan (Rp)", 100000, "") + numf("c-capex", "Renovasi dan peralatan (Rp)", 1000000, "") +
+    rngf("c-cogs", "Bahan baku atau harga pokok barang", 0, 80, 1, "%", "Persentase dari omzet.");
+  var ADV = {
+    local:
+      grp("Wilayah dan pasar") + numf("l-pop", "Penduduk wilayah (jiwa)", 1000, "", true) + rngf("l-cov", "Cakupan area layananmu", 0.5, 60, 0.5, "%", "Porsi penduduk wilayah yang tinggal atau lewat di sekitar lokasimu.", true) +
+      rngf("l-seg", "Segmen target", 5, 90, 1, "%", "Usia, pendapatan, dan gender yang cocok.", true) + rngf("l-need", "Yang benar-benar berminat", 1, 90, 1, "%", "", true) +
+      numf("l-price", "Harga per transaksi (Rp)", 1000, "", true) + numf("l-freq", "Transaksi per pelanggan per bulan", 0.5, "", true) +
+      grp("Persaingan") + numf("l-comp", "Kompetitor di area", 1, "", true) +
+      rngf("l-power", "Daya saing dibanding rata-rata", 50, 200, 10, "%", "", true) + rngf("l-ramp", "Realisasi tahun pertama", 30, 100, 5, "%", "", true) +
+      grp("Kalibrasi (opsional)") + numf("l-bench", "Omzet bulanan bisnis sejenis di area ini (Rp)", 1000000, "Isi angka nyata dari pemilik atau pengamatan langsung. Model menyesuaikan minat pasar dan galat mengecil.") + COSTF,
+    online:
+      grp("Pasar") + numf("o-users", "Pengguna internet di wilayah (jiwa)", 1000, "", true) + rngf("o-seg", "Segmen target", 0.5, 90, 0.5, "%", "Usia, minat, dan daya beli yang cocok.", true) + rngf("o-need", "Yang aktif mencari atau berminat", 1, 90, 1, "%", "", true) +
+      grp("Harga dan pembelian ulang") + numf("o-price", "Harga per pembelian (Rp)", 1000, "", true) + numf("o-rep", "Pembelian per pelanggan per tahun", 0.5, "", true) +
+      grp("Iklan dan konversi") + numf("o-budget", "Anggaran iklan per bulan (Rp)", 500000) + numf("o-cpc", "Biaya per klik (Rp)", 100, "", true) +
+      rngf("o-cvr", "Klik yang jadi pembeli", 0.2, 8, 0.1, "%", "Setelah tes iklan kecil, isi hasil aktual dan ubah keyakinan jadi Terukur.", true) + rngf("o-org", "Tambahan penjualan organik", 0, 100, 5, "%", "", true) + COSTF
+  };
+
+  /* ---------- model ---------- */
+  function calc(m, p, withLines) {
+    var r;
+    if (m === "local") {
+      var pop = p.pop * p.cov / 100, tam = pop * clamp(p.seg / 100), sam = tam * clamp(p.need / 100);
+      var pw = p.power / 100, fair = pw / (p.comp + pw), share = clamp(fair * p.ramp / 100);
+      var som = sam * share, rev = som * p.freq * p.price;
+      r = { tam: tam, sam: sam, som: som, rev: rev, share: share };
+      if (withLines) r.lines = [
+        "Area layanan = " + compact(p.pop) + " × " + pct(p.cov) + " = " + compact(pop) + " jiwa",
+        "TAM = " + compact(pop) + " × " + pct(p.seg) + " segmen = " + compact(tam) + " orang",
+        "SAM = " + compact(tam) + " × " + pct(p.need) + " berminat = " + compact(sam) + " orang",
+        "Pangsa wajar = " + fmt(pw) + " ÷ (" + fmt(p.comp) + " + " + fmt(pw) + ") = " + pct(fair * 100) + ", dikali realisasi " + pct(p.ramp) + " = " + pct(share * 100),
+        "SOM = " + compact(sam) + " × " + pct(share * 100) + " = " + compact(som) + " pelanggan per bulan",
+        "Omzet = " + compact(som) + " × " + fmt(p.freq) + " transaksi × " + rp(p.price) + " = " + rp(rev) + " per bulan"
+      ];
+    } else {
+      var tam2 = p.users * clamp(p.seg / 100), sam2 = tam2 * clamp(p.need / 100);
+      var clicks = p.cpc > 0 ? p.budget / p.cpc : 0;
+      var perMonth = clicks * clamp(p.cvr / 100) * (1 + p.org / 100);
+      var som2 = Math.min(sam2, perMonth * 12), rev2 = som2 * p.price * p.rep / 12;
+      r = { tam: tam2, sam: sam2, som: som2, rev: rev2, share: sam2 > 0 ? som2 / sam2 : 0 };
+      if (withLines) r.lines = [
+        "TAM = " + compact(p.users) + " × " + pct(p.seg) + " segmen = " + compact(tam2) + " orang",
+        "SAM = " + compact(tam2) + " × " + pct(p.need) + " berminat = " + compact(sam2) + " orang",
+        "Klik per bulan = " + rp(p.budget) + " ÷ " + rp(p.cpc) + " = " + compact(clicks) + " klik",
+        "Pembeli baru per bulan = " + compact(clicks) + " × " + pct(p.cvr) + " × (1 + " + pct(p.org) + " organik) = " + compact(perMonth),
+        "SOM = " + compact(perMonth) + " × 12 bulan = " + compact(som2) + " pelanggan baru per tahun (batas atas: SAM)",
+        "Omzet = " + compact(som2) + " × " + rp(p.price) + " × " + fmt(p.rep) + " pembelian ÷ 12 = " + rp(rev2) + " per bulan"
+      ];
+    }
+    return r;
+  }
+
+  function readParams(m) {
+    var pre = PREFIX[m], base = {}, calibK = null;
+    KEYS[m].forEach(function (k) { var q = $(pre + k + "-q"); base[k] = { v: num(pre + k), s: q ? parseFloat(q.value) : 0 }; });
+    if (m === "local") {
+      var bench = num("l-bench");
+      if (bench > 0) {
+        var mid = {}; KEYS.local.forEach(function (k) { mid[k] = base[k].v; });
+        var sam = mid.pop * mid.cov / 100 * clamp(mid.seg / 100) * clamp(mid.need / 100);
+        var pred = sam / (mid.comp + 1) * mid.freq * mid.price;
+        if (pred > 0) { calibK = clamp(bench / pred, 0.3, 3); base.need.v = Math.min(95, base.need.v * calibK); base.need.s = Math.min(base.need.s, 0.2); }
+      }
+    }
+    return { base: base, calibK: calibK };
+  }
+
+  function rngSeed(a) { return function () { a |= 0; a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  function pctile(sorted, q) { return sorted[Math.min(sorted.length - 1, Math.floor(q * sorted.length))]; }
+  function simulate(m, base) {
+    var rnd = rngSeed(20261012), keys = KEYS[m], unc = keys.filter(function (k) { return base[k].s > 0; });
+    var out = { tam: new Float64Array(NSIM), sam: new Float64Array(NSIM), som: new Float64Array(NSIM), rev: new Float64Array(NSIM) };
+    var zs = {}, lr = new Float64Array(NSIM);
+    unc.forEach(function (k) { zs[k] = new Float64Array(NSIM); });
+    for (var i = 0; i < NSIM; i++) {
+      var p = {};
+      keys.forEach(function (k) {
+        var s = base[k].s, z = 0;
+        if (s > 0) { var u1 = rnd() || 1e-12, u2 = rnd(); z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2); zs[k][i] = z; }
+        p[k] = base[k].v * Math.exp(s * z);
+      });
+      var r = calc(m, p, false);
+      out.tam[i] = r.tam; out.sam[i] = r.sam; out.som[i] = r.som; out.rev[i] = r.rev; lr[i] = Math.log(r.rev + 1);
+    }
+    var st = {};
+    ["tam", "sam", "som", "rev"].forEach(function (k) {
+      var s = Array.prototype.slice.call(out[k]).sort(function (a, b) { return a - b; });
+      var p10 = pctile(s, 0.1), p50 = pctile(s, 0.5), p90 = pctile(s, 0.9);
+      st[k] = { p10: p10, p50: p50, p90: p90, err: p50 > 0 ? (p90 - p10) / (2 * p50) * 100 : Infinity };
+    });
+    var mean = 0; for (var a = 0; a < NSIM; a++) mean += lr[a]; mean /= NSIM;
+    var vr = 0; for (var b = 0; b < NSIM; b++) vr += (lr[b] - mean) * (lr[b] - mean);
+    var sens = unc.map(function (k) {
+      var cz = 0, vz = 0, z = zs[k], mz = 0, j;
+      for (j = 0; j < NSIM; j++) mz += z[j]; mz /= NSIM;
+      for (j = 0; j < NSIM; j++) { cz += (z[j] - mz) * (lr[j] - mean); vz += (z[j] - mz) * (z[j] - mz); }
+      return { k: k, r2: vr > 0 && vz > 0 ? (cz * cz) / (vz * vr) : 0 };
+    });
+    var tot = sens.reduce(function (s, x) { return s + x.r2; }, 0);
+    sens.forEach(function (x) { x.share = tot > 0 ? x.r2 / tot * 100 : 0; });
+    sens.sort(function (a, b) { return b.share - a.share; });
+    st.sens = sens;
+    return st;
+  }
+
+  /* ---------- wilayah dan bisnis ---------- */
+  var mode = "local", curBiz = "kafe", last = null;
+  function set(id, v) { var el = $(id); if (el) el.value = v; }
+  function fillSel(id, list, keep) { var el = $(id), cur = el.value; el.innerHTML = opts(list); if (keep && list.some(function (x) { return x[0] === cur; })) el.value = cur; }
+  function fillProv(keep) {
+    var ks = Object.keys(REG).filter(function (p) { return p !== ALL; }).sort();
+    if (mode === "online") ks.unshift(ALL);
+    fillSel("r-prov", ks.map(function (p) { return [p, p]; }), keep);
+  }
+  function fillCities(keep) { fillSel("r-city", Object.keys(REG[$("r-prov").value] || {}).sort().map(function (k) { return [k, k]; }), keep); }
+  function curCity() { var p = REG[$("r-prov").value]; return p ? p[$("r-city").value] : null; }
+  function fillKec(keep) {
+    var c = curCity(), list = ((c && c.kec) || []).map(function (x, i) { return [String(i), x.n]; });
+    fillSel("r-kec", [["", list.length ? "Seluruh kota atau kabupaten" : "Belum ada data kecamatan"]].concat(list), keep);
+    $("r-kec").disabled = !list.length;
+  }
+  function curRegion() {
+    var c = curCity(); if (!c) return null;
+    var i = $("r-kec").value;
+    if (i !== "" && c.kec[+i]) { var k = c.kec[+i]; k.comp = k.comp || {}; return { pop: k.pop, bb: k.bb, comp: k.comp, q: dataInfo ? dataInfo.popQ : "0.15", kec: true }; }
+    return { pop: c.pop, comp: null, q: c.popQ, kec: false };
+  }
+  function regionLabel() { var c = curCity(), i = $("r-kec").value, name = $("r-city").value; return i !== "" && c && c.kec[+i] ? c.kec[+i].n + ", " + name : name; }
+  function wageBase() {
+    var city = $("r-city").value, prov = $("r-prov").value;
+    if (UMK[city]) return { v: UMK[city], src: "UMK 2026 " + city };
+    var same = Object.keys(REG[prov] || {}).filter(function (k) { return UMK[k]; });
+    if (same.length) return { v: UMK[same[0]], src: "UMK 2026 " + same[0] + " (kota terdekat di data)" };
+    return { v: UMK_REF, src: "UMK 2026 Kota Tangerang (kota ini belum ada di data, ubah sesuai UMK setempat)" };
+  }
+  function costFactor() { return clamp(wageBase().v / UMK_REF, 0.5, 1.15); }
+  function applyCost() {
+    var c = COST[curBiz], w = wageBase(), f = costFactor();
+    set("c-staff", c.staff);
+    set("c-wage", Math.round(w.v * c.wm / 1000) * 1000);
+    $("c-wage-h").textContent = (c.wm !== 1 ? fmt(c.wm) + "× " : "") + w.src + ". Tambah THR satu kali gaji per tahun sudah dihitung.";
+    set("c-rent", Math.round(c.rent * f / 100000) * 100000);
+    set("c-capex", Math.round((c.renov * f + c.alat) / 1e6) * 1e6);
+    set("c-cogs", c.cogs);
+  }
+  function costModel(rev) {
+    var c = COST[curBiz], f = costFactor();
+    var staff = num("c-staff"), wage = num("c-wage"), rent = num("c-rent"), capex = num("c-capex"), cogs = num("c-cogs") / 100;
+    var mkt = mode === "online" ? num("o-budget") : c.mkt;
+    var fixed = [
+      ["Gaji karyawan (termasuk THR)", staff * wage * 13 / 12],
+      ["Sewa tempat", rent],
+      ["Listrik dan air", c.util * f],
+      ["Internet dan aplikasi", c.net],
+      ["Perawatan alat", c.maint],
+      [mode === "online" ? "Iklan" : "Promosi", mkt]
+    ].filter(function (x) { return x[1] > 0; });
+    function variable(r) {
+      return [["Bahan baku atau barang", r * cogs], ["Biaya platform dan pembayaran", r * c.fee / 100], ["Kemasan", r * c.pack / 100]].filter(function (x) { return x[1] > 0; });
+    }
+    function tax(r) { return Math.max(0, r * 12 - TAX_FREE) * TAX_RATE / 12; }
+    var fixedSum = fixed.reduce(function (t, x) { return t + x[1]; }, 0);
+    function profit(r) { return r - fixedSum - variable(r).reduce(function (t, x) { return t + x[1]; }, 0) - tax(r); }
+    var modal = [
+      ["Renovasi dan peralatan", capex],
+      ["Stok awal", c.stok],
+      ["Izin dan legalitas", c.izin],
+      ["Sewa dibayar di muka (" + c.rentUp + " bulan)", rent * c.rentUp],
+      ["Cadangan operasional 3 bulan", fixedSum * 3]
+    ].filter(function (x) { return x[1] > 0; });
+    var modalSum = modal.reduce(function (t, x) { return t + x[1]; }, 0);
+    return { fixed: fixed, fixedSum: fixedSum, variable: variable(rev), tax: tax(rev), profit: profit, modal: modal, modalSum: modalSum };
+  }
+  function applyBiz() {
+    var b = BIZ[curBiz];
+    if (b.m === "local") { set("l-seg", b.seg); set("l-need", b.need); set("l-price", b.price); set("l-freq", b.freq); }
+    else { set("o-seg", b.seg); set("o-need", b.need); set("o-price", b.price); set("o-rep", b.rep); set("o-cvr", b.cvr); set("o-cpc", b.cpc); }
+    if ($("c-staff")) applyCost();
+  }
+  function applyComp() {
+    var r = curRegion(); if (!r || mode !== "local") return;
+    var cov = num("l-cov") / 100, c, q, h;
+    if (r.comp && typeof r.comp[curBiz] === "number") { c = r.comp[curBiz] * cov; q = "0.25"; h = "Hitungan OpenStreetMap untuk kecamatan ini" + (dataInfo && dataInfo.osm ? " (" + dataInfo.osm + ")" : "") + ", dikali cakupanmu. OSM sering kurang lengkap, anggap batas bawah."; }
+    else { c = r.pop * cov / 10000 * DENS[curBiz]; q = "0.45"; h = "Estimasi kepadatan rata-rata (" + fmt(DENS[curBiz]) + " per 10 ribu penduduk). Untuk angka nyata, hitung dari OpenStreetMap atau Google Maps."; }
+    set("l-comp", Math.max(1, Math.round(c))); set("l-comp-q", q); $("l-comp-h").textContent = h;
+  }
+  function applyRegion() {
+    var r = curRegion(); if (!r) return;
+    applyCost();
+    if (mode === "local") { set("l-pop", Math.round(r.pop)); set("l-pop-q", r.q); set("l-cov", r.kec ? 25 : 2); applyComp(); }
+    else {
+      var g = inetGroup($("r-prov").value);
+      set("o-users", Math.round(r.pop * INET_G[g])); set("o-users-q", "0.15");
+      $("o-users-h").textContent = "Penduduk wilayah × " + pct(INET_G[g] * 100) + " penetrasi internet " + (g === "Nasional" ? "nasional" : "wilayah " + g) + " (Survei APJII 2025).";
+    }
+  }
+  function setStat(t) { $("datastat").textContent = t; }
+  var MONTHS = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+  function tgl(iso) { var d = new Date(iso + "T00:00:00"); return isNaN(d) ? iso : d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear(); }
+  function applyBase(d) {
+    if (d.penduduk && d.penduduk.kota && d.penduduk.kota.length) seedReg(d.penduduk.kota, d.penduduk.nasional || 284430900);
+    if (d.internet && d.internet.wilayah) INET_G = d.internet.wilayah;
+    if (d.upah && d.upah.kota) { UMK = d.upah.kota; if (UMK["Kota Tangerang"]) UMK_REF = UMK["Kota Tangerang"]; }
+    if (d.pajak) { TAX_RATE = d.pajak.tarif; TAX_FREE = d.pajak.bebas_per_tahun; }
+    var k = d.pembanding && d.pembanding.kafe;
+    if (k) { FORE_MONTH = k.pendapatan / ((k.gerai_awal + k.gerai_akhir) / 2) / 12; FORE_NOTE = "rata-rata gerai " + k.nama + " tahun " + k.tahun; }
+    if (d.diperbarui) $("databadge").textContent = "Data per " + tgl(d.diperbarui);
+  }
+  function mergeData(d) {
+    var dq = d.popQ || "0.15", seen = {}, n = 0, kota = 0;
+    dataInfo = { popQ: dq, osm: d.osm_tanggal ? "OSM per " + tgl(d.osm_tanggal) : "" };
+    d.wilayah.forEach(function (w) {
+      if (!seen[w.p]) { REG[w.p] = {}; seen[w.p] = 1; }
+      var kec = (w.kec || []).slice().sort(function (a, b) { return a.n.localeCompare(b.n); });
+      REG[w.p][w.k] = { pop: w.pop || kec.reduce(function (t, x) { return t + x.pop; }, 0), kec: kec, popQ: dq };
+      n += kec.length; kota++;
+    });
+    setStat("Data kecamatan: " + n.toLocaleString("id-ID") + " kecamatan di " + kota.toLocaleString("id-ID") + " kota atau kabupaten. Sumber: " + (d.src || "tidak disebutkan") + ".");
+  }
+  function getJSON(url) { return fetch(url, { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); }
+  function refresh() {
+    fillProv(true); if (!REG[$("r-prov").value]) set("r-prov", "Banten");
+    fillCities(true); fillKec(true); applyRegion(); sync(); render();
+  }
+  function loadData() {
+    try {
+      getJSON("data/dasar.json").then(applyBase).catch(function () {})
+        .then(function () { return getJSON("data/kecamatan.json").then(mergeData).catch(function () {}); })
+        .then(refresh).catch(function () {});
+    } catch (e) {}
+  }
+
+  function renderTiles() {
+    $("seg-local").setAttribute("aria-pressed", mode === "local");
+    $("seg-online").setAttribute("aria-pressed", mode === "online");
+    $("tiles").innerHTML = Object.keys(BIZ).filter(function (k) { return BIZ[k].m === mode; }).map(function (k) {
+      var b = BIZ[k], sub = b.m === "local" ? rp(b.price) + " · " + fmt(b.freq) + "× per bulan" : rp(b.price) + " · " + fmt(b.rep) + "× per tahun";
+      return '<button type="button" class="tile" data-biz="' + k + '" aria-pressed="' + (k === curBiz) + '" style="background:' + b.g + '"><i aria-hidden="true">✓</i><b>' + b.n + "</b><span>" + sub + "</span></button>";
+    }).join("");
+  }
+
+  /* ---------- tampilan hasil ---------- */
+  function render() {
+    var rp0 = readParams(mode), base = rp0.base, st = simulate(mode, base);
+    var midP = {}; KEYS[mode].forEach(function (k) { midP[k] = base[k].v; });
+    var det = calc(mode, midP, true);
+    var somUnit = mode === "local" ? "pelanggan per bulan" : "pelanggan baru per tahun";
+    var errTxt = function (e) { return isFinite(e) ? "±" + Math.round(e) + "%" : "–"; };
+    var label = regionLabel(), b = BIZ[curBiz];
+
+    $("hero").innerHTML =
+      '<span class="chip"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-6.3 7-12a7 7 0 1 0-14 0c0 5.7 7 12 7 12Z" fill="currentColor"/><circle cx="12" cy="10" r="2.6" fill="#fbe3dc"/></svg><span>' + b.n + " · " + label + "</span></span>" +
+      '<div class="lbl" style="margin-top:16px">Potensi pelanggan' + (mode === "online" ? " online" : "") + "</div>" +
+      '<div class="big">' + compact(st.sam.p50) + "<small>orang</small></div>" +
+      '<div class="muted small">kemungkinan 80%: ' + compact(st.sam.p10) + " sampai " + compact(st.sam.p90) + " orang</div>" +
+      '<p class="sentence">Dari ' + compact(st.tam.p50) + " orang yang cocok dengan segmenmu, sekitar <b>" + compact(st.som.p50) + " " + somUnit + "</b> realistis kamu dapatkan, setara omzet <b>" + rp(st.rev.p50) + "</b> per bulan.</p>" +
+      (curBiz === "kafe" ? '<div class="bench">Pembanding nyata: ' + FORE_NOTE + ' sekitar <b>' + rp(FORE_MONTH) + "</b> per bulan. Itu jaringan premium dengan pesan antar, jadi anggap batas atas, bukan target.</div>" : "");
+
+    var e = st.sam.err, score = isFinite(e) ? Math.round(100 / (1 + e / 100)) : 0;
+    var level = score >= 70 ? ["ok", "Cukup pasti"] : score >= 55 ? ["mid", "Sedang"] : ["bad", "Masih kasar"];
+    var C = 2 * Math.PI * 70, dash = C * score / 100;
+    $("health").innerHTML = '<h3 style="text-align:left">Kepastian angka</h3>' +
+      '<div class="ring"><svg viewBox="0 0 168 168" aria-hidden="true"><circle cx="84" cy="84" r="70" fill="none" stroke="#fbe3dc" stroke-width="10"/><circle cx="84" cy="84" r="70" fill="none" stroke="#e8664f" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + dash.toFixed(1) + " " + C.toFixed(1) + '" style="transition:stroke-dasharray .5s ease"/></svg>' +
+      '<div class="num"><b>' + score + "</b><span>dari 100</span></div></div>" +
+      '<div class="verdict ' + level[0] + '">' + level[1] + '</div><div class="muted small">galat potensi pelanggan ' + errTxt(e) + "</div>" +
+      '<div class="stats">' +
+        "<div><b>" + compact(st.tam.p50) + "</b><span>Pasar total</span><em>galat " + errTxt(st.tam.err) + "</em></div>" +
+        "<div><b>" + compact(st.sam.p50) + "</b><span>Berminat</span><em>galat " + errTxt(st.sam.err) + "</em></div>" +
+        "<div><b>" + compact(st.som.p50) + "</b><span>Realistis didapat</span><em>" + somUnit + "</em></div>" +
+        "<div><b>" + rp(st.rev.p50) + "</b><span>Omzet per bulan</span><em>galat " + errTxt(st.rev.err) + "</em></div>" +
+      "</div>";
+
+    var names = NAMES[mode];
+    $("banner").innerHTML = "<h3>Ukur ini dulu supaya angkanya lebih pasti</h3><ol>" + st.sens.slice(0, 3).map(function (x) {
+      return "<li><span>" + names[x.k] + "</span><em>" + Math.round(x.share) + "% · " + QNAME[base[x.k].s.toFixed(2)] + '</em><i style="--w:' + Math.round(x.share) + '%"></i></li>';
+    }).join("") + "</ol>";
+
+    var tiers = [["tam", "Pasar total", "orang"], ["sam", "Yang berminat", "orang"], ["som", "Realistis didapat", somUnit]];
+    var top = Math.max(st.tam.p90, 10);
+    var w = function (v) { return v <= 1 ? 0 : clamp(Math.log10(v) / Math.log10(top) * 100, 1.5, 100); };
+    $("funnel").innerHTML = "<h3>Corong pasar</h3>" + tiers.map(function (t) {
+      var s = st[t[0]];
+      return '<div class="tier"><div class="row"><span>' + t[1] + "</span><b>" + compact(s.p50) + '</b></div><div class="track"><i class="band" style="width:' + w(s.p90) + '%"></i><i class="bar" style="width:' + w(s.p50) + '%"></i><i class="lo" style="left:calc(' + w(s.p10) + '% - 1.5px)"></i></div><div class="rg">' + compact(s.p10) + " sampai " + compact(s.p90) + " " + t[2] + "</div></div>";
+    }).join("") + '<p class="hint" style="margin-top:8px">Batang tua: perkiraan tengah. Batang muda: sampai batas atas. Garis gelap: batas bawah. Skala logaritmik.</p>';
+
+    var sharePct = clamp(det.share) * 100;
+    $("rev").innerHTML = '<div class="lbl">Omzet per bulan</div><div class="rev-num">' + rp(st.rev.p50) + '</div><div class="muted small">' + rp(st.rev.p10) + " sampai " + rp(st.rev.p90) + " · per tahun " + rp(st.rev.p50 * 12) + "</div>" +
+      '<div class="meter"><i style="width:' + Math.max(1.5, Math.min(100, sharePct)) + '%"></i></div><div class="muted small" style="margin-top:6px">' + (mode === "local" ? "Pangsa target " : "Terjangkau iklan ") + pct(sharePct) + " dari yang berminat</div>";
+
+    var cm = costModel(st.rev.p50), pr = cm.profit(st.rev.p50), lo = cm.profit(st.rev.p10), hi = cm.profit(st.rev.p90);
+    var varSum = cm.variable.reduce(function (t, x) { return t + x[1]; }, 0), totalMonth = cm.fixedSum + varSum + cm.tax;
+    var rows = function (list, total) {
+      return '<ul class="costs">' + list.map(function (x) {
+        return '<li><span>' + x[0] + "</span><b>" + rp(x[1]) + '</b><i style="--w:' + Math.max(1.5, x[1] / total * 100).toFixed(1) + '%"></i></li>';
+      }).join("") + "</ul>";
+    };
+    $("modal").innerHTML = '<div class="lbl">Perkiraan modal awal</div><div class="rev-num">' + rp(cm.modalSum) + '</div><div class="muted small">kisaran kasar ' + rp(cm.modalSum * 0.75) + " sampai " + rp(cm.modalSum * 1.4) + "</div>" + rows(cm.modal, cm.modalSum);
+    $("opex").innerHTML = '<div class="lbl">Biaya bulanan pada omzet ' + rp(st.rev.p50) + '</div><div class="rev-num">' + rp(totalMonth) + "</div>" +
+      '<div class="sub2">Biaya tetap</div>' + rows(cm.fixed, totalMonth) +
+      (cm.variable.length ? '<div class="sub2">Ikut naik turun dengan omzet</div>' + rows(cm.variable, totalMonth) : "") +
+      '<div class="sub2">Pajak</div><ul class="costs"><li><span>PPh final UMKM ' + pct(TAX_RATE * 100) + '</span><b>' + rp(cm.tax) + "</b></li></ul>" +
+      '<p class="hint" style="margin-top:8px">' + (cm.tax > 0 ? "Pajak " + pct(TAX_RATE * 100) + " hanya untuk omzet di atas " + rp(TAX_FREE) + " per tahun (wajib pajak orang pribadi)." : "Omzet setahun di bawah " + rp(TAX_FREE) + ", jadi belum kena PPh final untuk wajib pajak orang pribadi.") + "</p>";
+    var bep = pr > 0 ? Math.ceil(cm.modalSum / pr) : null;
+    var lvl = pr <= 0 ? "bad" : bep <= 24 ? "ok" : "mid";
+    $("profit").innerHTML = '<div class="lbl">Perkiraan laba bersih per bulan</div><div class="rev-num ' + (pr < 0 ? "neg" : "pos") + '">' + (pr < 0 ? "−" : "") + rp(Math.abs(pr)) + "</div>" +
+      '<div class="muted small">kisaran ' + (lo < 0 ? "−" : "") + rp(Math.abs(lo)) + " sampai " + (hi < 0 ? "−" : "") + rp(Math.abs(hi)) + ", mengikuti rentang omzet</div>" +
+      '<div class="bep ' + lvl + '"><b>' + (bep ? bep + " bulan" : "Belum balik modal") + "</b><span>" + (bep ? "perkiraan waktu balik modal" + (bep > 36 ? ", terlalu lama untuk usaha kecil" : "") : "Dengan asumsi ini biaya bulanan lebih besar dari omzet. Ubah harga, biaya, atau lokasi.") + "</span></div>";
+
+    var calNote = rp0.calibK ? " Minat pasar sudah disesuaikan dengan 1 bisnis pembanding (faktor " + fmt(rp0.calibK) + "×)." : "";
+    $("status").innerHTML = '<div class="dot" aria-hidden="true">!</div><p><b>Belum divalidasi.</b> Galat di sini berasal dari ketidakpastian asumsi, bukan dari perbandingan dengan omzet nyata.' + calNote + (mode === "online" ? " Untuk bisnis online, pelanggan realistis dibatasi anggaran iklan." : "") + "</p>";
+
+    $("lines").innerHTML = det.lines.map(function (l) { return "<li>" + l + "</li>"; }).join("");
+    last = { st: st, somUnit: somUnit, label: label, cost: { modal: cm.modalSum, month: totalMonth, profit: pr, bep: bep } };
+  }
+
+  function sync() { document.querySelectorAll('#advbody input[type="range"]').forEach(function (r) { $(r.id + "-o").textContent = parseFloat(r.value).toLocaleString("id-ID") + r.dataset.unit; }); }
+
+  function buildAdv() {
+    $("advbody").innerHTML = ADV[mode];
+    var q = mode === "local" ? LQ : OQ, pre = PREFIX[mode];
+    Object.keys(q).forEach(function (k) { set(pre + k + "-q", q[k]); });
+    applyBiz(); applyRegion();
+    if (mode === "local") { set("l-power", 100); set("l-ramp", 60); } else { set("o-budget", 10000000); set("o-org", 20); }
+    sync(); render();
+  }
+  function setMode(m, biz) {
+    mode = m; curBiz = biz || Object.keys(BIZ).filter(function (k) { return BIZ[k].m === m; })[0];
+    fillProv(true);
+    if (!REG[$("r-prov").value]) set("r-prov", "Banten");
+    fillCities(true); fillKec(true);
+    renderTiles(); buildAdv();
+  }
+  function selectBiz(k) {
+    if (BIZ[k].m !== mode) { setMode(BIZ[k].m, k); return; }
+    curBiz = k; renderTiles(); applyBiz(); applyComp(); sync(); render();
+  }
+
+  $("controls").addEventListener("input", function (e) {
+    var id = e.target.id;
+    if (id === "r-prov") { fillCities(); fillKec(); applyRegion(); }
+    if (id === "r-city") { fillKec(); applyRegion(); }
+    if (id === "r-kec") applyRegion();
+    if (id === "l-cov") applyComp();
+    sync(); render();
+  });
+  $("controls").addEventListener("click", function (e) {
+    var t = e.target.closest ? e.target.closest("[data-biz]") : null;
+    if (t) { selectBiz(t.getAttribute("data-biz")); return; }
+    if (e.target.id === "seg-local" && mode !== "local") setMode("local");
+    if (e.target.id === "seg-online" && mode !== "online") setMode("online");
+  });
+
+  $("copy").addEventListener("click", function () {
+    if (!last) return;
+    var s = last.st, e = function (x) { return isFinite(x.err) ? " ±" + Math.round(x.err) + "%" : ""; };
+    var txt = "Estimasi pasar: " + BIZ[curBiz].n + " di " + last.label + "\n" +
+      "Pasar total: " + compact(s.tam.p50) + " orang (" + compact(s.tam.p10) + " - " + compact(s.tam.p90) + ")" + e(s.tam) + "\n" +
+      "Potensi pelanggan: " + compact(s.sam.p50) + " orang (" + compact(s.sam.p10) + " - " + compact(s.sam.p90) + ")" + e(s.sam) + "\n" +
+      "Realistis didapat: " + compact(s.som.p50) + " " + last.somUnit + " (" + compact(s.som.p10) + " - " + compact(s.som.p90) + ")" + e(s.som) + "\n" +
+      "Omzet per bulan: " + rp(s.rev.p50) + " (" + rp(s.rev.p10) + " - " + rp(s.rev.p90) + ")" + e(s.rev) + "\n" +
+      "Modal awal: " + rp(last.cost.modal) + "\nBiaya bulanan: " + rp(last.cost.month) + "\nLaba bersih per bulan: " + (last.cost.profit < 0 ? "-" : "") + rp(Math.abs(last.cost.profit)) + "\nBalik modal: " + (last.cost.bep ? last.cost.bep + " bulan" : "belum") + "\n" +
+      "Galat berasal dari simulasi ketidakpastian asumsi, belum divalidasi dengan omzet nyata.";
+    var done = function (ok) { $("copied").textContent = ok ? "Tersalin." : "Gagal menyalin."; setTimeout(function () { $("copied").textContent = ""; }, 2500); };
+    try { navigator.clipboard.writeText(txt).then(function () { done(true); }, function () { done(false); }); } catch (x) { done(false); }
+  });
+
+  setStat("Saat ini tersedia data tingkat kota. Pilihan kecamatan muncul setelah data kecamatan ditambahkan.");
+  fillProv(); set("r-prov", "Banten"); fillCities(); set("r-city", "Kota Tangerang"); fillKec();
+  renderTiles(); buildAdv();
+  loadData();
+})();
+</script>
+
+</body>
+</html>
