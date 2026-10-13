@@ -224,7 +224,7 @@ a { color: var(--lilac); }
 @media (prefers-reduced-motion: reduce) { .tile, .ring circle { transition: none !important; } }
 
 /* ===== Desktop: kerangka aplikasi (sidebar pilihan + konten bertab) ===== */
-.side-brand, .chead, .tabs { display: none; }
+.side-brand, .chead, .tabs, .biz-search { display: none; }
 @media (min-width: 900px) {
   .top { display: none; }
   .wrap { padding-block: 24px 40px; }
@@ -243,7 +243,10 @@ a { color: var(--lilac); }
   .pickcard .seg { order: 3; margin: 0; display: flex; background: rgba(255, 255, 255, 0.2); }
   .pickcard .seg button { flex: 1; color: rgba(255, 255, 255, 0.88); }
   .pickcard .seg button[aria-pressed="true"] { color: var(--ink); }
-  .pickcard .tiles { order: 4; display: flex; flex-direction: column; gap: 8px; overflow: visible; padding: 3px; margin: 0; }
+  .biz-search { display: block; order: 4; width: 100%; border: 0; border-radius: 14px; padding: 11px 14px; font-size: 14px; background: rgba(255, 255, 255, 0.92); color: var(--ink); margin-bottom: -6px; }
+  .biz-search::placeholder { color: var(--muted); }
+  .pickcard .tiles { order: 4; display: flex; flex-direction: column; gap: 8px; overflow-x: hidden; overflow-y: auto; max-height: 292px; padding: 3px 6px 3px 3px; margin: 0; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.55) transparent; }
+  .pickcard .tiles .none { color: rgba(255, 255, 255, 0.85); font-size: 13px; padding: 8px 4px; }
   .pickcard .tile { width: auto; height: auto; min-height: 0; padding: 10px 40px 10px 14px; gap: 1px; justify-content: flex-start; border-radius: 16px; }
   .pickcard .tile::after { right: -22px; bottom: -40px; }
   .pickcard .tile b { font-size: 15px; }
@@ -346,6 +349,7 @@ a { color: var(--lilac); }
             <span class="hint" id="copied2" role="status"></span>
           </div>
         </div>
+        <input type="search" class="biz-search" id="biz-q" placeholder="Cari jenis bisnis…" aria-label="Cari jenis bisnis" autocomplete="off">
         <div class="tiles" id="tiles" role="group" aria-label="Pilih jenis bisnis"></div>
         <div class="fields">
           <div class="field"><label for="r-prov">Provinsi</label><select id="r-prov"></select></div>
@@ -910,6 +914,18 @@ a { color: var(--lilac); }
   var board = document.getElementById("board"); if (!board) return;
   var pc = board.querySelector(".pickcard"), brand = document.querySelector(".top .brand");
   if (pc && brand) { var c = brand.cloneNode(true); c.classList.add("side-brand"); pc.insertBefore(c, pc.firstChild); }
+  var q = document.getElementById("biz-q"), tl = document.getElementById("tiles"), busy = false;
+  function filt() {
+    if (!q || !tl || busy) return; busy = true;
+    var v = q.value.trim().toLowerCase(), n = 0, none = tl.querySelector(".none");
+    Array.prototype.forEach.call(tl.querySelectorAll(".tile"), function (t) {
+      var ok = !v || t.textContent.toLowerCase().indexOf(v) > -1; t.hidden = !ok; if (ok) n++;
+    });
+    if (v && !n) { if (!none) { none = document.createElement("p"); none.className = "none"; none.textContent = "Tidak ada yang cocok."; tl.appendChild(none); } }
+    else if (none) none.remove();
+    busy = false;
+  }
+  if (q && tl) { q.addEventListener("input", filt); new MutationObserver(function () { if (!busy) filt(); }).observe(tl, { childList: true }); }
   var tabs = board.querySelectorAll(".tabs button");
   Array.prototype.forEach.call(tabs, function (b) {
     b.addEventListener("click", function () {
