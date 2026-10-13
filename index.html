@@ -350,6 +350,13 @@ a { color: var(--lilac); }
 .pb-txt .hint { margin-top: 12px; }
 .pb-leg span { margin-left: auto; }
 @media (min-width: 900px) { #profit { display: flex; flex-direction: column; } #profit .stmt { flex: 1; justify-content: space-between; } .payback { display: grid; grid-template-columns: minmax(230px, 300px) minmax(0, 1fr); gap: 28px; align-items: center; } }
+
+#advbody .rng .pct { flex: none; width: 78px; min-width: 0; text-align: right; border: 0; border-radius: 12px; background: var(--soft); padding: 8px 10px; font-size: 13.5px; font-weight: 600; appearance: textfield; -moz-appearance: textfield; accent-color: auto; }
+#advbody .rng .pct::-webkit-outer-spin-button, #advbody .rng .pct::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.rng .pu { margin-left: -6px; font-size: 13px; color: var(--muted); }
+.rng output { display: none; }
+.abs { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 12.5px; color: var(--muted); }
+#advbody .abs .ab { width: 130px; flex: none; border: 0; border-radius: 12px; background: var(--soft); padding: 8px 10px; font-size: 13.5px; font-weight: 600; text-align: right; }
 </style>
 
 </head>
@@ -930,10 +937,42 @@ a { color: var(--lilac); }
     last = { st: st, somUnit: somUnit, label: label, cost: { modal: cm.modalSum, month: totalMonth, profit: pr, bep: bep } };
   }
 
-  function sync() { document.querySelectorAll('#advbody input[type="range"]').forEach(function (r) { $(r.id + "-o").textContent = parseFloat(r.value).toLocaleString("id-ID") + r.dataset.unit; }); }
+  var BASE = {
+    "l-cov": function () { return num("l-pop"); },
+    "l-seg": function () { return num("l-pop") * num("l-cov") / 100; },
+    "l-need": function () { return num("l-pop") * num("l-cov") / 100 * num("l-seg") / 100; },
+    "o-seg": function () { return num("o-users"); },
+    "o-need": function () { return num("o-users") * num("o-seg") / 100; }
+  };
+  function enhance() {
+    document.querySelectorAll("#advbody input[type=range]").forEach(function (r) {
+      r.step = "any";
+      var box = document.createElement("input"); box.type = "number"; box.className = "pct"; box.setAttribute("data-for", r.id); box.min = "0"; box.step = "any"; box.inputMode = "decimal"; box.setAttribute("aria-label", "Persen, ketik angka");
+      var unit = document.createElement("span"); unit.className = "pu"; unit.textContent = r.dataset.unit || "%";
+      var rng = r.parentNode; rng.insertBefore(box, $(r.id + "-o")); rng.insertBefore(unit, $(r.id + "-o"));
+      if (BASE[r.id]) {
+        var a = document.createElement("div"); a.className = "abs";
+        a.innerHTML = '<span>atau</span><input type="number" class="ab" min="0" step="any" inputmode="numeric" data-abs="' + r.id + '" aria-label="Jumlah orang, ketik angka"><span>orang</span>';
+        rng.parentNode.insertBefore(a, rng.nextSibling);
+      }
+    });
+  }
+  function fnum(v) { return String(Math.round(v * 10) / 10); }
+  function sync() {
+    document.querySelectorAll('#advbody input[type="range"]').forEach(function (r) {
+      $(r.id + "-o").textContent = parseFloat(r.value).toLocaleString("id-ID") + r.dataset.unit;
+      var b = document.querySelector('#advbody .pct[data-for="' + r.id + '"]'); if (b && document.activeElement !== b) b.value = fnum(parseFloat(r.value));
+      var a = document.querySelector('#advbody .ab[data-abs="' + r.id + '"]'); if (a && document.activeElement !== a) a.value = Math.round(BASE[r.id]() * parseFloat(r.value) / 100);
+    });
+  }
+  $("advbody").addEventListener("input", function (e) {
+    var t = e.target, r, v;
+    if (t.classList.contains("pct")) { r = $(t.getAttribute("data-for")); v = parseFloat(t.value); if (isFinite(v) && v >= 0) { if (v > +r.max) r.max = v; if (v < +r.min) r.min = v; r.value = v; } }
+    else if (t.classList.contains("ab")) { r = $(t.getAttribute("data-abs")); var base = BASE[r.id](); v = parseFloat(t.value); if (isFinite(v) && v >= 0 && base > 0) { v = v / base * 100; if (v > +r.max) r.max = v; if (v < +r.min) r.min = v; r.value = v; } }
+  });
 
   function buildAdv() {
-    $("advbody").innerHTML = ADV[mode];
+    $("advbody").innerHTML = ADV[mode]; enhance();
     var q = mode === "local" ? LQ : OQ, pre = PREFIX[mode];
     Object.keys(q).forEach(function (k) { set(pre + k + "-q", q[k]); });
     applyBiz(); applyRegion();
