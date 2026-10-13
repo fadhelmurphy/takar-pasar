@@ -268,7 +268,8 @@ a { color: var(--lilac); }
   .tabs button[aria-selected="true"] { background: #fff; color: var(--ink); box-shadow: 0 4px 12px rgba(80, 60, 90, 0.14); }
   .board[data-tab="ring"] [data-t]:not([data-t~="ring"]), .board[data-tab="pel"] [data-t]:not([data-t~="pel"]), .board[data-tab="biaya"] [data-t]:not([data-t~="biaya"]) { display: none !important; }
   .rev-card, .side > .actions { display: none; }
-  .foot { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 20px; align-items: start; }
+  .foot { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: stretch; gap: 14px; }
+  .foot > * { width: 100%; max-width: none; }
   .foot > .actions { display: none; }
   #funnel, #modal { display: flex; flex-direction: column; justify-content: space-between; }
   #modal .costs { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
